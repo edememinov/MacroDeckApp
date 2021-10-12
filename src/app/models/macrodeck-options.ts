@@ -5,5 +5,6 @@ export interface MacroDeckOptions {
   development: boolean,
   calibrationMode: boolean,
   buttonCount: number,
-  maxButtonCurrent: number
+  maxButtonCurrent: number,
+  server: boolean
 }

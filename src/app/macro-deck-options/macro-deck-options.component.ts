@@ -26,7 +26,8 @@ export class MacroDeckOptionsComponent implements OnInit {
       development: new FormControl(''),
       calibrationMode: new FormControl(''),
       buttonCount: new FormControl(''),
-      maxButtonCurrent: new FormControl('')
+      maxButtonCurrent: new FormControl(''),
+      server: new FormControl('')
 
     });
 
