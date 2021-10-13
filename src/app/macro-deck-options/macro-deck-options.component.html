@@ -42,9 +42,9 @@
         <mat-form-field class="form-field" appearance="outline">
           <mat-label> Max Current in mV
           </mat-label>
-          <input matInput formControlName="maxButtonCurrent" type="number" required>
-          <mat-error *ngIf="macrodeckOptions.controls.maxButtonCurrent.touched && macrodeckOptions.controls.maxButtonCurrent.invalid">
-            <span *ngIf="macrodeckOptions.controls.maxButtonCurrent.errors.required">This field is mandatory.</span>
+          <input matInput formControlName="maxButtonAmp" type="number" required>
+          <mat-error *ngIf="macrodeckOptions.controls.maxButtonAmp.touched && macrodeckOptions.controls.maxButtonAmp.invalid">
+            <span *ngIf="macrodeckOptions.controls.maxButtonAmp.errors.required">This field is mandatory.</span>
           </mat-error>
         </mat-form-field>
       </div>
