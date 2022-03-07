@@ -20,12 +20,15 @@ import { StoreModule } from '@ngrx/store';
 import { MacroDeckOptionsModule } from './macro-deck-options/macro-deck-options.module';
 import { MacroDeckButtonOptionsComponent } from './macro-deck-button-options/macro-deck-button-options.component';
 import { MacroDeckButtonsComponent } from './macro-deck-buttons/macro-deck-buttons.component';
+import { MacroDeckUrlModule } from './macro-deck-url/macro-deck-url.module';
+import { MacroDeckButtonsModule } from './macro-deck-buttons/macro-deck-buttons.module';
+import { SearchBoxComponent } from './search-box/search-box.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
 @NgModule({
-  declarations: [AppComponent, MacroDeckButtonOptionsComponent, MacroDeckButtonsComponent],
+  declarations: [AppComponent, MacroDeckButtonOptionsComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -37,6 +40,8 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     MaterialModule,
     MacroDeckOptionsModule,
     AppRoutingModule,
+    MacroDeckUrlModule,
+    MacroDeckButtonsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

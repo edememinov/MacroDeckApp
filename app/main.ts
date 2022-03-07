@@ -1,7 +1,10 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
+
+import { fork } from 'child_process';
+
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -68,7 +71,9 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  app.on('ready', () => setTimeout(createWindow, 400));
+  app.on('ready', () => {
+    setTimeout(createWindow, 400);
+  });
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
@@ -91,3 +96,51 @@ try {
   // Catch Error
   // throw e;
 }
+
+function writeToFile(data) {
+  var p = path.join(__dirname, 'macrodeck_url.json');
+  fs.writeFile(p,data , function(err) {
+    if(err) {
+        console.log(err);
+    }
+    console.log("The file was saved!");
+  });
+}
+
+function readUrl(): string{
+  var p = path.join(__dirname, 'macrodeck_url.json');
+  console.log(__dirname)
+  if(fs.existsSync(p)){
+    return fs.readFileSync(p,'utf8')
+  }
+  else {
+    writeToFile("NoURLSet");
+  }
+  return "NotSet";
+
+}
+
+ipcMain.on('writeUrl', (event, data) => {
+  writeToFile(data);
+});
+
+ipcMain.on('readUrl', (event, data) => {
+  event.returnValue = readUrl();
+});
+
+ipcMain.on('saveDeckboardData', (event, data) => {
+  var p = path.join(__dirname, 'deckboard_getData','merge-files.js');
+  const child = fork(p, args, {cwd:  path.join(__dirname, 'deckboard_getData')});
+  event.returnValue = true;
+  child.on('close', function (){
+    event.sender.send('deckBoardDataDone', false)
+  }) 
+  child.on('error', (err) => {
+    event.sender.send(err.message);
+  });
+
+  child.on('message', (msg) => {
+    event.sender.send(msg.toString());
+})
+});
+

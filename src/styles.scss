@@ -1,12 +1,16 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-
+html{
+  height: 100vh;
+}
 body {
   font-family: Roboto, Arial, sans-serif;
   margin: 0;
+  height: 100vh;
 }
 
 .basic-container {
   padding: 5px;
+  height: 100vh;
 }
 
 .version-info {

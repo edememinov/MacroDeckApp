@@ -1,0 +1,24 @@
+{
+    "buttons": [
+        {
+            "command_id": 1,
+            "type": "socket",
+            "description": "Test1234"
+        },
+        {
+            "command_id": 2,
+            "type": "socket",
+            "description": "Sup bro"
+        },
+        {
+            "command_id": 3,
+            "type": "socket",
+            "description": "Hi man"
+        },
+        {
+            "command_id": 4,
+            "type": "socket",
+            "description": "Whatas upos"
+        }
+    ]
+}

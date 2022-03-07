@@ -17,12 +17,13 @@
       "filter": [
         "**/*"
       ]
-    }
+    },
+    "app/deckboard_getData/"
   ],
   "win": {
     "icon": "dist/assets/icons",
     "target": [
-      "portable"
+      "squirrel"
     ]
   },
   "portable": {

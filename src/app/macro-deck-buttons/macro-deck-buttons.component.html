@@ -1,1 +1,73 @@
-<p>macro-deck-buttons works!</p>
+    <div class="well">
+        <form class="example-form">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Files</mat-label>
+              <input type="text"
+                     placeholder="Choose file"
+                     aria-label="File"
+                     matInput
+                     [formControl]="fileControl"
+                     [matAutocomplete]="files">
+              <mat-autocomplete #files="matAutocomplete" (optionSelected)='getFile($event.option.value)'>
+                <mat-option *ngFor="let option of filteredOptionsFile | async" [value]="option">
+                  {{option}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+
+        <form class="example-form">
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>Pages</mat-label>
+              <input type="text"
+                     placeholder="Choose page"
+                     aria-label="Page"
+                     matInput
+                     [formControl]="searchControl"
+                     [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)='setPage($event.option.value)'>
+                <mat-option *ngFor="let option of filteredOptionsPage | async" [value]="option.name">
+                  {{option.name}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+
+        <div class="example-container col-md-6">
+            <h2>On Device</h2>
+            <app-search-box
+                (textChanged)="onDeviceFilter = $event"
+            ></app-search-box>
+            <div class="max-height-scrollable">
+                <div
+              cdkDropList
+              #onDevice="cdkDropList"
+              [cdkDropListData]="pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy"
+              [cdkDropListConnectedTo]="[allAvailable]"
+              class="example-list"
+              (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let item of pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy" cdkDrag>{{item.description}}</div>
+            </div>
+            </div>
+            
+          </div>
+          
+          <div class="example-container col-md-6">
+            <h2>All available buttons</h2>
+            <app-search-box
+                (textChanged)="allAvailableFilter = $event"
+            ></app-search-box>
+            <div class="max-height-scrollable">
+                <div
+              cdkDropList
+              #allAvailable="cdkDropList"
+              [cdkDropListData]="buttonFile.buttons | listFilter: allAvailableFilter:dummy"
+              [cdkDropListConnectedTo]="[onDevice]"
+              class="example-list"
+              (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let item of buttonFile.buttons | listFilter: allAvailableFilter:dummy" cdkDrag>{{item.description}}</div>
+            </div>
+            </div>
+            
+    </div>
+  </div>

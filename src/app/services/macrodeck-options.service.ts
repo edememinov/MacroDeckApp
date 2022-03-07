@@ -14,7 +14,7 @@ export class MacrodeckOptionsService {
 
 
   getOptions() {
-    return this.http.get<MacroDeckOptions>('http://192.168.1.113/getoptions').pipe();
+    return this.http.get<MacroDeckOptions>('http://192.168.1.112/getoptions').pipe();
   }
 
   setOptions(options){
@@ -25,12 +25,6 @@ export class MacrodeckOptionsService {
     .append('Access-Control-Allow-Methods', 'POST')
     .append('Access-Control-Allow-Origin', '*');
 
-    this.http.post<any>('http://192.168.1.113/setoptions', options).subscribe({
-        next: data => {
-        },
-        error: error => {
-            console.error('There was an error!', error);
-        }
-    })
+    return this.http.post<any>(`http:///setoptions`, options).pipe();
   }
 }

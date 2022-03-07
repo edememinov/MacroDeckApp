@@ -1,0 +1,9 @@
+
+<button *ngIf="!searchBoxShown" type="button" mat-icon-button aria-label="Search List" matTooltip="Search List" (click)="showSearchbox()"><mat-icon>search</mat-icon></button>
+<div *ngIf="searchBoxShown" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput type="text" placeholder="Search list" [(ngModel)]="filterText"  (ngModelChange)="onTextChanged()"/>
+  <button matSuffix mat-icon-button aria-label="Clear" (click)="onFilterClear()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
