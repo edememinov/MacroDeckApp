@@ -13,11 +13,11 @@ export class MacrodeckOptionsService {
 
 
 
-  getOptions() {
-    return this.http.get<MacroDeckOptions>('http://192.168.1.112/getoptions').pipe();
+  getOptions(url) {
+    return this.http.get<MacroDeckOptions>(`http://${url}/getoptions`).pipe();
   }
 
-  setOptions(options){
+  setOptions(options, url){
 
     const headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
@@ -25,6 +25,6 @@ export class MacrodeckOptionsService {
     .append('Access-Control-Allow-Methods', 'POST')
     .append('Access-Control-Allow-Origin', '*');
 
-    return this.http.post<any>(`http:///setoptions`, options).pipe();
+    return this.http.post<any>(`http://${url}/setoptions`, options).pipe();
   }
 }

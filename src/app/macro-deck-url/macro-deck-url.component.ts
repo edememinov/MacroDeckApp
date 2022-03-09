@@ -28,11 +28,10 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
       url: new FormControl(''),
     });
 
-    this.urlOptions.controls.url.patchValue( this._electron.ipcRenderer.sendSync('readUrl', ''));
+    this.urlOptions.controls.url.patchValue(this._electron.ipcRenderer.sendSync('readUrl', ''));
 
     this._electron.ipcRenderer.on("deckBoardDataDone", (event, args) => {
-      //window.location.reload();
-      console.log(args);
+      window.location.reload();
     });
 
   }

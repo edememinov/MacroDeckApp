@@ -18,7 +18,7 @@ export class MacrodeckButtonService {
     return this.http.get<string[]>('http://192.168.1.112/getfiles').pipe();
   }
 
-  editFile(buttonFile){
+  editFile(buttonFile, url){
 
     const headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
@@ -26,10 +26,10 @@ export class MacrodeckButtonService {
     .append('Access-Control-Allow-Methods', 'POST')
     .append('Access-Control-Allow-Origin', '*');
 
-    return this.http.post<any>(`http://192.168.1.112/editfile`, buttonFile).pipe();
+    return this.http.post<any>(`http://${url}/editfile`, buttonFile).pipe();
   }
 
-  deleteFile(fileName){
+  deleteFile(fileName, url){
 
     const headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
@@ -37,10 +37,10 @@ export class MacrodeckButtonService {
     .append('Access-Control-Allow-Methods', 'POST')
     .append('Access-Control-Allow-Origin', '*');
 
-    return this.http.post<any>(`http://192.168.1.112/deletefile`, fileName).pipe();
+    return this.http.post<any>(`http://${url}/deletefile`, fileName).pipe();
   }
   
-  createNewFile(fileName){
+  createNewFile(fileName, url){
 
     const headers = new HttpHeaders()
     .append('Content-Type', 'application/json')
@@ -48,10 +48,17 @@ export class MacrodeckButtonService {
     .append('Access-Control-Allow-Methods', 'POST')
     .append('Access-Control-Allow-Origin', '*');
 
-    return this.http.post<any>(`http://192.168.1.112/createnewfile`, fileName).pipe();
+    return this.http.post<any>(`http://${url}/createnewfile`, fileName).pipe();
   }
 
-  getFile(fileName){
-    return this.http.get<any>(`http://192.168.1.112${fileName}`).pipe();
+  getFile(fileName, url){
+
+    const headers = new HttpHeaders()
+    .append('Content-Type', 'text/plain')
+    .append('Access-Control-Allow-Headers', 'Content-Type')
+    .append('Access-Control-Allow-Methods', 'GET')
+    .append('Access-Control-Allow-Origin', '*');
+
+    return this.http.get<any>(`http://${url}${fileName}`).pipe();
   }
 }

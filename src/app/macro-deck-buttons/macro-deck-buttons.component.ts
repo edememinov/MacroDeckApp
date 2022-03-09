@@ -114,15 +114,19 @@ pageFile = {
     }
   ]
 }
+ 
   allAvailableFilter:string;
   onDeviceFilter: string;
+  selectedFile: any;
   dummy = 0;
   pageNumber = 0 ;
   unsubscriber = new Subject();
   allFiles: string[];
   constructor(private _electron:ElectronService, private buttonService : MacrodeckButtonService) { }
+
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.unsubscriber.next();
+    this.unsubscriber.complete();
   }
 
   searchControl = new FormControl();
@@ -161,9 +165,10 @@ pageFile = {
     }
 
     this.buttonService.getAllFiles().pipe(takeUntil(this.unsubscriber)).subscribe((value) => {
-      this.fileControl.setValue(value[0]);
-      console.log(value);
       if(value){
+        this.fileControl.setValue(value[0]);
+        this.selectedFile = value[0];
+        this.getFile(value[0]);
         this.filteredOptionsFile = this.fileControl.valueChanges.pipe(
           startWith(''),
           map(data => this._filterFiles(value, data)),
@@ -171,22 +176,33 @@ pageFile = {
       }
     })
 
-    this.searchControl.setValue(this.pageFile.pages[0].name);
-    this.filteredOptionsPage = this.searchControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterPageFile(value)),
-    );
+    
+  }
+
+  submit(){
+    this.buttonService.editFile({ pages: this.pageFile.pages, fileName: this.selectedFile}, 
+      this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(value =>{
+        window.location.reload();
+    },
+    error => {
+      console.log(error);
+    })
   }
 
   setPage(pageName){
     console.log(pageName);
-    let page = _.find(this.pageFile.pages, (value) => value.name === pageName)
-    this.pageNumber = _.findIndex(this.pageFile.pages, page);
+    this.selectedFile = _.find(this.pageFile.pages, (value) => value.name === pageName)
+    this.pageNumber = _.findIndex(this.pageFile.pages, this.selectedFile);
   }
 
   getFile(fileName){
-    this.buttonService.getFile(fileName).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
+    this.buttonService.getFile(fileName, this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
       this.pageFile = data;
+      this.searchControl.setValue(this.pageFile.pages[0].name);
+      this.filteredOptionsPage = this.searchControl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterPageFile(value)),
+      );
     })
   }
   

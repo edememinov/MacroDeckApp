@@ -4,6 +4,7 @@ import { MacrodeckOptionsService } from '../services/macrodeck-options.service';
 import { MacroDeckOptions } from '../models/macrodeck-options'
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
+import { ElectronService } from '../core/services';
 
 @Component({
   selector: 'app-macro-deck-options',
@@ -17,7 +18,7 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
   options: Observable<MacroDeckOptions>;
   unsubscriber = new Subject()
 
-  constructor(private formBuilder: FormBuilder, private optionsService: MacrodeckOptionsService) { }
+  constructor(private formBuilder: FormBuilder, private optionsService: MacrodeckOptionsService, private _electron:ElectronService) { }
   ngOnDestroy(): void {
     this.unsubscriber.next();
     this.unsubscriber.complete();
@@ -32,10 +33,11 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
       calibrationMode: new FormControl(''),
       buttonCount: new FormControl(''),
       maxButtonAmp: new FormControl(''),
+      webserverOnly: new FormControl(''),
       server: new FormControl('')
     });
 
-    this.options = this.optionsService.getOptions().pipe(
+    this.options = this.optionsService.getOptions(this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(
       tap(options => this.macrodeckOptions.patchValue(options), takeUntil(this.unsubscriber))
     );
 
@@ -45,7 +47,12 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
     if (!this.macrodeckOptions.valid) {
       return;
     }
-    this.optionsService.setOptions(this.macrodeckOptions.value).pipe();
+    this.optionsService.setOptions(this.macrodeckOptions.value, 
+      this._electron.ipcRenderer.sendSync('readUrl', '')).pipe().subscribe(value => {
+
+    }, error => {
+      console.log(error);
+    });
     console.log(this.macrodeckOptions.value);
   }
 
