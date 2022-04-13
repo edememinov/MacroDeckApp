@@ -23,12 +23,14 @@ import { MacroDeckButtonsComponent } from './macro-deck-buttons/macro-deck-butto
 import { MacroDeckUrlModule } from './macro-deck-url/macro-deck-url.module';
 import { MacroDeckButtonsModule } from './macro-deck-buttons/macro-deck-buttons.module';
 import { SearchBoxComponent } from './search-box/search-box.component';
+import { MacroDeckButtonOptionsModule } from './macro-deck-button-options/macro-deck-button-options.module';
+import { MacroDeckCustomButtonsComponent } from './macro-deck-custom-buttons/macro-deck-custom-buttons.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
 @NgModule({
-  declarations: [AppComponent, MacroDeckButtonOptionsComponent],
+  declarations: [AppComponent ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -42,6 +44,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     AppRoutingModule,
     MacroDeckUrlModule,
     MacroDeckButtonsModule,
+    MacroDeckButtonOptionsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -9,7 +9,7 @@
                      [formControl]="fileControl"
                      [matAutocomplete]="files">
               <mat-autocomplete #files="matAutocomplete" (optionSelected)='getFile($event.option.value)'>
-                <mat-option *ngFor="let option of filteredOptionsFile | async" [value]="option">
+                <mat-option *ngFor="let option of filteredOptionsFile$ | async" [value]="option">
                   {{option}}
                 </mat-option>
               </mat-autocomplete>
@@ -26,7 +26,7 @@
                      [formControl]="searchControl"
                      [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)='setPage($event.option.value)'>
-                <mat-option *ngFor="let option of filteredOptionsPage | async" [value]="option.name">
+                <mat-option *ngFor="let option of filteredOptionsPage$ | async" [value]="option.name">
                   {{option.name}}
                 </mat-option>
               </mat-autocomplete>

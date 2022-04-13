@@ -11,8 +11,6 @@ export class MacrodeckOptionsService {
 
   constructor(private http:HttpClient) { }
 
-
-
   getOptions(url) {
     return this.http.get<MacroDeckOptions>(`http://${url}/getoptions`).pipe();
   }

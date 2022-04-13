@@ -1,1 +1,30 @@
-<p>macro-deck-button-options works!</p>
+<form *ngIf="macrodeckButtonOptions" [formGroup]="macrodeckButtonOptions">
+    <mat-form-field class="form-field" appearance="outline">
+        <mat-label> Default value
+        </mat-label>
+        <input matInput formControlName="defaultValue" required>
+      </mat-form-field>
+  
+    <ng-container formArrayName="buttons">
+      <div *ngFor="let _ of formArray.controls; index as i">
+        <ng-container [formGroupName]="i">
+            <mat-form-field class="form-field" appearance="outline">
+                <mat-label> Button
+                </mat-label>
+                <input matInput formControlName="buttonValue" readonly>
+              </mat-form-field>
+          <mat-form-field class="form-field" appearance="outline">
+            <mat-label> Min Value
+            </mat-label>
+            <input matInput formControlName="minValue" required>
+          </mat-form-field>
+          <mat-form-field class="form-field" appearance="outline">
+            <mat-label> Max value
+            </mat-label>
+            <input matInput formControlName="maxValue" required>
+          </mat-form-field>
+        </ng-container>
+      </div>
+    </ng-container>
+    <button mat-raised-button color="primary" (click)="submit()">Save</button>
+  </form>

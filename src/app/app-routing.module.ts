@@ -7,6 +7,7 @@ import { DetailRoutingModule } from './detail/detail-routing.module';
 import { MacroDeckOptionsRoutingModule } from './macro-deck-options/macro-deck-options-routing.module';
 import { MacroDeckUrlRoutingModule } from './macro-deck-url/macro-deck-url-routing.module';
 import { MacroDeckButtonsRoutingModule } from './macro-deck-buttons/macro-deck-buttons-routing.module';
+import { MacroDeckButtonOptionsRoutingModule } from './macro-deck-button-options/macro-deck-button-options-routing.module';
 
 const routes: Routes = [
   {
@@ -27,7 +28,8 @@ const routes: Routes = [
     DetailRoutingModule,
     MacroDeckOptionsRoutingModule,
     MacroDeckUrlRoutingModule,
-    MacroDeckButtonsRoutingModule
+    MacroDeckButtonsRoutingModule,
+    MacroDeckButtonOptionsRoutingModule
   ],
   exports: [RouterModule]
 })

@@ -16,13 +16,6 @@ if (!fs.existsSync(finalDir)){
     fs.mkdirSync(finalDir);
 }
 
-var p = path.join(__dirname, 'sup_this_is_a_test.json');
-  fs.writeFile(p, 'Test this shit nerd' , function(err) {
-    if(err) {
-        console.log(err);
-    }
-    console.log("The file was saved!");
-});
 
 function runScript(scriptPath, callback) {
 

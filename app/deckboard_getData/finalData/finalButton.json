@@ -19,6 +19,21 @@
             "command_id": 4,
             "type": "socket",
             "description": "Whatas upos"
+        },
+        {
+            "command_id": 5,
+            "type": "socket",
+            "description": "kaas met peren"
+        },
+        {
+            "command_id": 6,
+            "type": "socket",
+            "description": "Koekjes zonder grenzen"
+        },
+        {
+            "command_id": 7,
+            "type": "socket",
+            "description": "Maarten heeft soms goede tips voor angular"
         }
     ]
 }

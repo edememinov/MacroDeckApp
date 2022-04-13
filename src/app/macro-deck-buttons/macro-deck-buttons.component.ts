@@ -20,21 +20,6 @@ export class MacroDeckButtonsComponent implements OnInit, OnDestroy {
             "command_id": 1,
             "type": "socket",
             "description": "Test1234"
-        },
-        {
-            "command_id": 2,
-            "type": "socket",
-            "description": "Sup bro"
-        },
-        {
-            "command_id": 3,
-            "type": "socket",
-            "description": "Hi man"
-        },
-        {
-            "command_id": 4,
-            "type": "socket",
-            "description": "Whatas upos"
         }
     ]
 };
@@ -48,67 +33,6 @@ pageFile = {
           "command_id": 130,
           "type": "socket",
           "description": "Reload"
-        },
-        {
-          "command_id": 46,
-          "type": "socket",
-          "description": "Hide"
-        },
-        {
-          "command_id": 57,
-          "type": "socket",
-          "description": "Close"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/bedroomlighttoggle/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Toggle bedroom light"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/toggleLedStrip/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Ledstrip on"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/toggleLedStrip/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Ik eet kaas",
-          "fingerprint": "ik eet kaas"
-        }
-      ]
-    },{
-      "name": "Test1",
-      "buttons": [
-        {
-          "command_id": 130,
-          "type": "socket",
-          "description": "Flauw"
-        },
-        {
-          "command_id": 46,
-          "type": "socket",
-          "description": "Kaas"
-        },
-        {
-          "command_id": 57,
-          "type": "socket",
-          "description": "Paarden"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/bedroomlighttoggle/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Worst"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/toggleLedStrip/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Appelsap"
-        },
-        {
-          "url": "https://maker.ifttt.com/trigger/toggleLedStrip/with/key/fJOlW0DpSuY_h4auJ1l05",
-          "type": "apiCall",
-          "description": "Ik eet kaas",
-          "fingerprint": "ik eet kaas"
         }
       ]
     }
@@ -120,20 +44,20 @@ pageFile = {
   selectedFile: any;
   dummy = 0;
   pageNumber = 0 ;
-  unsubscriber = new Subject();
+  unsubscriber$ = new Subject();
   allFiles: string[];
   constructor(private _electron:ElectronService, private buttonService : MacrodeckButtonService) { }
 
   ngOnDestroy(): void {
-    this.unsubscriber.next();
-    this.unsubscriber.complete();
+    this.unsubscriber$.next();
+    this.unsubscriber$.complete();
   }
 
   searchControl = new FormControl();
   fileControl = new FormControl();
 
-  filteredOptionsPage: Observable<any>;
-  filteredOptionsFile: Observable<any>;
+  filteredOptionsPage$: Observable<any>;
+  filteredOptionsFile$: Observable<any>;
 
   private _filterPageFile(value: string) {
     const filterValue = value.toLowerCase();
@@ -146,30 +70,14 @@ pageFile = {
   }
   
   ngOnInit(): void {
-
-    try{
-      if(this._electron.fs.existsSync(`${__dirname}\\deckboard_getData\\finalData\\finalButton.json`)){
-        const rawdata = this._electron.fs.readFileSync(`${__dirname}\\deckboard_getData\\finalData\\finalButton.json`)
-        this.buttonFile = JSON.parse(rawdata.toString());
-      }
-      else{
-        this._electron.fs.writeFileSync(`${__dirname}\\deckboard_getData\\finalData\\finalButton.json`, `{
-          "command_id": 0,
-          "type": "mock",
-          "description": "Nothing found"
-        },`)
-      }
-    }
-    catch(error) {
-      console.log(error);
-    }
-
-    this.buttonService.getAllFiles().pipe(takeUntil(this.unsubscriber)).subscribe((value) => {
+    
+    this.buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readMacrodeckData', ''));
+    this.buttonService.getAllFiles().pipe(takeUntil(this.unsubscriber$)).subscribe((value) => {
       if(value){
         this.fileControl.setValue(value[0]);
         this.selectedFile = value[0];
         this.getFile(value[0]);
-        this.filteredOptionsFile = this.fileControl.valueChanges.pipe(
+        this.filteredOptionsFile$ = this.fileControl.valueChanges.pipe(
           startWith(''),
           map(data => this._filterFiles(value, data)),
         );
@@ -180,8 +88,12 @@ pageFile = {
   }
 
   submit(){
-    this.buttonService.editFile({ pages: this.pageFile.pages, fileName: this.selectedFile}, 
-      this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(value =>{
+    this.buttonService.editFile(
+      { 
+        pages: this.pageFile.pages, fileName: this.selectedFile
+      }, 
+      this._electron.ipcRenderer.sendSync('readUrl', ''))
+      .pipe(takeUntil(this.unsubscriber$)).subscribe(value =>{
         window.location.reload();
     },
     error => {
@@ -196,10 +108,10 @@ pageFile = {
   }
 
   getFile(fileName){
-    this.buttonService.getFile(fileName, this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
+    this.buttonService.getFile(fileName, this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber$)).subscribe(data => {
       this.pageFile = data;
       this.searchControl.setValue(this.pageFile.pages[0].name);
-      this.filteredOptionsPage = this.searchControl.valueChanges.pipe(
+      this.filteredOptionsPage$ = this.searchControl.valueChanges.pipe(
         startWith(''),
         map(value => this._filterPageFile(value)),
       );
@@ -232,7 +144,6 @@ pageFile = {
 
   moveWithinArray(newitem, oldItem, previousContainer){
     if(previousContainer === 'cdk-drop-list-1'){
-
       let newIndex = _.findIndex(this.buttonFile.buttons, oldItem);
       let oldIndex = _.findIndex(this.buttonFile.buttons, newitem)
       this.move(this.buttonFile.buttons, oldIndex, newIndex);
@@ -245,7 +156,7 @@ pageFile = {
     }
   }
 
-  move(array, from, to) {
+  private move(array, from, to) {
     array.splice(to, 0, array.splice(from, 1)[0]);
   };
 

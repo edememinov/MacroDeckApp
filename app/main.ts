@@ -97,8 +97,8 @@ try {
   // throw e;
 }
 
-function writeToFile(data) {
-  var p = path.join(__dirname, 'macrodeck_url.json');
+function writeToDeckboardFile(data) {
+  let p = path.join(__dirname, 'macrodeck_url.json');
   fs.writeFile(p,data , function(err) {
     if(err) {
         console.log(err);
@@ -108,28 +108,46 @@ function writeToFile(data) {
 }
 
 function readUrl(): string{
-  var p = path.join(__dirname, 'macrodeck_url.json');
-  console.log(__dirname)
+  let p = path.join(__dirname, 'macrodeck_url.json');
   if(fs.existsSync(p)){
     return fs.readFileSync(p,'utf8')
   }
   else {
-    writeToFile("NoURLSet");
+    writeToDeckboardFile("NoURLSet");
   }
   return "NotSet";
 
 }
 
+function readDeckboardFile(){
+  let p = path.join(__dirname, 'deckboard_getData', 'finalData', 'finalButton.json');
+  console.log(p);
+  if(fs.existsSync(p)){
+    return fs.readFileSync(p,'utf8')
+  }
+  else{
+    fs.writeFileSync(p, `{
+      "command_id": 0,
+      "type": "mock",
+      "description": "Nothing found"
+    },`);
+  }
+}
+
 ipcMain.on('writeUrl', (event, data) => {
-  writeToFile(data);
+  writeToDeckboardFile(data);
 });
 
 ipcMain.on('readUrl', (event, data) => {
   event.returnValue = readUrl();
 });
 
+ipcMain.on('readMacrodeckData', (event, data) => {
+  event.returnValue = readDeckboardFile();
+});
+
 ipcMain.on('saveDeckboardData', (event, data) => {
-  var p = path.join(__dirname, 'deckboard_getData','merge-files.js');
+  let p = path.join(__dirname, 'deckboard_getData','merge-files.js');
   const child = fork(p, args, {cwd:  path.join(__dirname, 'deckboard_getData')});
   event.returnValue = true;
   child.on('close', function (){
