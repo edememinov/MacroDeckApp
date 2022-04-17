@@ -107,6 +107,17 @@ function writeToDeckboardFile(data) {
   });
 }
 
+
+function writeToDeckboardButtonFile(data) {
+  let p = path.join(__dirname, 'deckboard_getData', 'finalData', 'finalButton.json');
+  fs.writeFile(p,data , function(err) {
+    if(err) {
+        console.log(err);
+    }
+    console.log("The file was saved!");
+  });
+}
+
 function readUrl(): string{
   let p = path.join(__dirname, 'macrodeck_url.json');
   if(fs.existsSync(p)){
@@ -144,6 +155,11 @@ ipcMain.on('readUrl', (event, data) => {
 
 ipcMain.on('readMacrodeckData', (event, data) => {
   event.returnValue = readDeckboardFile();
+});
+
+ipcMain.on('writeMacrodeckData', (event, data) => {
+  writeToDeckboardButtonFile(data);
+  event.returnValue = 'Ok'
 });
 
 ipcMain.on('saveDeckboardData', (event, data) => {

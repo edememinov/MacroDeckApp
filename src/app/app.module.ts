@@ -24,7 +24,11 @@ import { MacroDeckUrlModule } from './macro-deck-url/macro-deck-url.module';
 import { MacroDeckButtonsModule } from './macro-deck-buttons/macro-deck-buttons.module';
 import { SearchBoxComponent } from './search-box/search-box.component';
 import { MacroDeckButtonOptionsModule } from './macro-deck-button-options/macro-deck-button-options.module';
-import { MacroDeckCustomButtonsComponent } from './macro-deck-custom-buttons/macro-deck-custom-buttons.component';
+import { MacroDeckCustomButtonsModule } from './macro-deck-custom-buttons/macro-deck-custom-buttons.module';
+import { AdminPanelModule } from './admin-panel/admin-panel.module'
+import { SafePipe } from './services/safe.pipe';
+import { AdminPanelUpdateModule } from './admin-panel-update/admin-panel-update.module';
+import { MacroDeckEditButtonsModule } from './macro-deck-edit-buttons/macro-deck-edit-buttons.module';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -44,7 +48,11 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     AppRoutingModule,
     MacroDeckUrlModule,
     MacroDeckButtonsModule,
+    MacroDeckCustomButtonsModule,
     MacroDeckButtonOptionsModule,
+    AdminPanelModule,
+    AdminPanelUpdateModule,
+    MacroDeckEditButtonsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

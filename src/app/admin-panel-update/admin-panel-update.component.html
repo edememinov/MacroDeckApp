@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p>Version on the device: {{firmwareVersion}}</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row" [ngStyle]="{'color':latestFirmwareAvailable ===  firmwareVersion? 'green' : 'red' }">
+        <div class="col-md-12">
+            <p>Latest version: {{latestFirmwareAvailable}}</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row" *ngIf="latestFirmwareAvailable !==  firmwareVersion">
+        <div class="col-md-12">
+            <a target="_blank" href="https://downgit.github.io/#/home?url=https://github.com/edememinov/MacroDeck/blob/main/ActionHandler.h.d1.bin">Download latest version</a>
+        </div>
+    </div>
+</div>
+<iframe name="showIframe" [src]="data | safe:'resourceUrl'" height="600" width="1000"></iframe>

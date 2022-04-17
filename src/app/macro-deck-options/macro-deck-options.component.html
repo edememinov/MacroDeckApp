@@ -1,4 +1,9 @@
 <div class="example-container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Device Settings</h2>
+    </div>
+  </div>
   <div class="form-container">
     <form [formGroup]="macrodeckOptions" (submit)="submit()" *ngIf="options | async; else loading">
       <div class="col-md-12">
@@ -48,6 +53,59 @@
           </mat-error>
         </mat-form-field>
       </div>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>MQTT Settings</h2>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="form-field" appearance="outline">
+          <mat-label> Client ID
+          </mat-label>
+          <input matInput formControlName="mqttClientID" required>
+          <mat-error *ngIf="macrodeckOptions.controls.mqttClientID.touched && macrodeckOptions.controls.mqttClientID.invalid">
+            <span *ngIf="macrodeckOptions.controls.mqttClientID.errors.required">This field is mandatory.</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-field" appearance="outline">
+          <mat-label> Broker
+          </mat-label>
+          <input matInput formControlName="mqttBroker" required>
+          <mat-error *ngIf="macrodeckOptions.controls.mqttBroker.touched && macrodeckOptions.controls.mqttBroker.invalid">
+            <span *ngIf="macrodeckOptions.controls.mqttBroker.errors.required">This field is mandatory.</span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="form-field" appearance="outline">
+          <mat-label> Username
+          </mat-label>
+          <input matInput formControlName="mqttUsername" required>
+          <mat-error *ngIf="macrodeckOptions.controls.mqttUsername.touched && macrodeckOptions.controls.mqttUsername.invalid">
+            <span *ngIf="macrodeckOptions.controls.mqttUsername.errors.required">This field is mandatory.</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-field" appearance="outline">
+          <mat-label> Password
+          </mat-label>
+          <input matInput formControlName="mqttPassword" type="password" required>
+          <mat-error *ngIf="macrodeckOptions.controls.mqttPassword.touched && macrodeckOptions.controls.mqttPassword.invalid">
+            <span *ngIf="macrodeckOptions.controls.mqttPassword.errors.required">This field is mandatory.</span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="form-field" appearance="outline">
+          <mat-label> Port
+          </mat-label>
+          <input matInput formControlName="mqttPort" required>
+          <mat-error *ngIf="macrodeckOptions.controls.mqttPort.touched && macrodeckOptions.controls.mqttPort.invalid">
+            <span *ngIf="macrodeckOptions.controls.mqttPort.errors.required">This field is mandatory.</span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
       <div class="form-field">
         <div class="row">
           <div class="col-md-3">

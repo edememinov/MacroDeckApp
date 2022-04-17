@@ -3,7 +3,7 @@ import { ElectronService } from '../core/services';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import * as _ from 'lodash/';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { MacrodeckButtonService } from '../services/macrodeck-button.service';
 
@@ -43,10 +43,16 @@ pageFile = {
   onDeviceFilter: string;
   selectedFile: any;
   dummy = 0;
+  pageName = '';
   pageNumber = 0 ;
+  fileName = '';
   unsubscriber$ = new Subject();
   allFiles: string[];
-  constructor(private _electron:ElectronService, private buttonService : MacrodeckButtonService) { }
+  addPage = false;
+  addFile = false;
+  addFormGroup : FormGroup;
+  createdFileName: string = null;
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private buttonService : MacrodeckButtonService) { }
 
   ngOnDestroy(): void {
     this.unsubscriber$.next();
@@ -70,6 +76,10 @@ pageFile = {
   }
   
   ngOnInit(): void {
+
+    this.addFormGroup = this.formBuilder.group({
+      name: new FormControl(''),
+    });
     
     this.buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readMacrodeckData', ''));
     this.buttonService.getAllFiles().pipe(takeUntil(this.unsubscriber$)).subscribe((value) => {
@@ -86,15 +96,73 @@ pageFile = {
 
     
   }
+  addPageEnable(){
+    if(!this.addFile){
+      this.addPage = true;
+    }
+    else{
+      this.addPage = true;
+      this.addFile = false;
+    }
+  }
+
+  addFileEnable(){
+    if(!this.addPage){
+      this.addFile = true;
+    }
+    else{
+      this.addPage = false;
+      this.addFile = true;
+    }
+  }
+  addPageOrFile(){
+    if(this.addFile){
+      this.buttonService.createNewFile({fileName: this.addFormGroup.controls.name.value},  this._electron.ipcRenderer.sendSync('readUrl', '')).subscribe(value =>{
+        this.createdFileName = this.addFormGroup.controls.name.value;
+        this.addPageEnable();
+    },
+    error => {
+      console.log(error);
+    });
+    }
+    else if(this.addPage){
+      if(this.createdFileName !== null){
+        this.buttonService.editFile(
+          { 
+            pages: [{name: this.addFormGroup.controls.name.value, buttons: []}], fileName: this.createdFileName
+          }, 
+          this._electron.ipcRenderer.sendSync('readUrl', '')).subscribe(value =>{
+            //window.location.reload();
+            this.createdFileName = null;
+        },
+        error => {
+          console.log(error);
+        })
+      }
+      else{
+        this.pageFile.pages.push({name: this.addFormGroup.controls.name.value, buttons: []});
+        this.buttonService.editFile(
+          { 
+            pages: this.pageFile.pages, fileName: this.fileName
+          }, 
+          this._electron.ipcRenderer.sendSync('readUrl', '')).subscribe(value =>{
+            //window.location.reload();
+        },
+        error => {
+          console.log(error);
+        })
+      }
+    }
+  }
 
   submit(){
     this.buttonService.editFile(
       { 
-        pages: this.pageFile.pages, fileName: this.selectedFile
+        pages: this.pageFile.pages, fileName: this.fileName
       }, 
       this._electron.ipcRenderer.sendSync('readUrl', ''))
       .pipe(takeUntil(this.unsubscriber$)).subscribe(value =>{
-        window.location.reload();
+        //window.location.reload();
     },
     error => {
       console.log(error);
@@ -102,12 +170,13 @@ pageFile = {
   }
 
   setPage(pageName){
-    console.log(pageName);
+    this.pageName = pageName;
     this.selectedFile = _.find(this.pageFile.pages, (value) => value.name === pageName)
     this.pageNumber = _.findIndex(this.pageFile.pages, this.selectedFile);
   }
 
   getFile(fileName){
+    this.fileName = fileName;
     this.buttonService.getFile(fileName, this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber$)).subscribe(data => {
       this.pageFile = data;
       this.searchControl.setValue(this.pageFile.pages[0].name);

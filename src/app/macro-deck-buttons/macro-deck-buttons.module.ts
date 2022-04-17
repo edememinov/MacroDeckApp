@@ -10,6 +10,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ListFilterPipe } from '../services/listFilter.pipe';
 import { SearchBoxModule } from '../search-box/search-box.module';
+import { SatPopoverModule } from '@ncstate/sat-popover';
+import { MacroDeckEditButtonsModule } from '../macro-deck-edit-buttons/macro-deck-edit-buttons.module';
 
 
 
@@ -26,7 +28,9 @@ import { SearchBoxModule } from '../search-box/search-box.module';
     MatNativeDateModule,
     ReactiveFormsModule,
     DragDropModule,
-    SearchBoxModule
+    SearchBoxModule,
+    SatPopoverModule,
+    MacroDeckEditButtonsModule
   ]
 })
 export class MacroDeckButtonsModule { }

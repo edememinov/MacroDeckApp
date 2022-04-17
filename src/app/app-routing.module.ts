@@ -8,6 +8,9 @@ import { MacroDeckOptionsRoutingModule } from './macro-deck-options/macro-deck-o
 import { MacroDeckUrlRoutingModule } from './macro-deck-url/macro-deck-url-routing.module';
 import { MacroDeckButtonsRoutingModule } from './macro-deck-buttons/macro-deck-buttons-routing.module';
 import { MacroDeckButtonOptionsRoutingModule } from './macro-deck-button-options/macro-deck-button-options-routing.module';
+import { MacroDeckCustomButtonsRoutingModule } from './macro-deck-custom-buttons/macro-deck-custom-buttons-routing.module';
+import { AdminPanelRoutingModule } from './admin-panel/admin-panel-routing.module';
+import { AdminPanelFilesRoutingModule } from './admin-panel-update/admin-panel-update-routing.module';
 
 const routes: Routes = [
   {
@@ -29,7 +32,10 @@ const routes: Routes = [
     MacroDeckOptionsRoutingModule,
     MacroDeckUrlRoutingModule,
     MacroDeckButtonsRoutingModule,
-    MacroDeckButtonOptionsRoutingModule
+    MacroDeckButtonOptionsRoutingModule,
+    MacroDeckCustomButtonsRoutingModule,
+    AdminPanelRoutingModule,
+    AdminPanelFilesRoutingModule
   ],
   exports: [RouterModule]
 })

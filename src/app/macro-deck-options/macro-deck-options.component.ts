@@ -34,7 +34,13 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
       buttonCount: new FormControl(''),
       maxButtonAmp: new FormControl(''),
       webserverOnly: new FormControl(''),
-      server: new FormControl('')
+      server: new FormControl(''),
+      
+      mqttClientID: new FormControl(''),
+      mqttPassword: new FormControl(''),
+      mqttUsername: new FormControl(''),
+      mqttBroker: new FormControl(''),
+      mqttPort: new FormControl(1883), 
     });
 
     this.options = this.optionsService.getOptions(this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(
