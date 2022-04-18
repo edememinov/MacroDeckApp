@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/button.model';
 
@@ -14,6 +14,8 @@ export class MacroDeckEditButtonsComponent implements OnInit {
 
   @Input() public button: MqttButton | MacroDeckButton | ApiCallButton;
 
+  @Output() newItemEvent = new EventEmitter<MqttButton | MacroDeckButton | ApiCallButton>();
+
   ngOnInit(): void {
     this.customButton = this.formBuilder.group({
       url: new FormControl(''),
@@ -22,9 +24,14 @@ export class MacroDeckEditButtonsComponent implements OnInit {
       topic: new FormControl(''),
       payload: new FormControl(''),
       fingerprint: new FormControl(''),
+      type: new FormControl()
     });
 
     this.customButton.patchValue(this.button);
+  }
+
+  submit(){
+    this.newItemEvent.emit(this.customButton.value);
   }
 
 }

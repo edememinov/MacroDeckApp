@@ -169,6 +169,10 @@ pageFile = {
     })
   }
 
+  updateButton($event){
+    console.log($event);
+  }
+
   setPage(pageName){
     this.pageName = pageName;
     this.selectedFile = _.find(this.pageFile.pages, (value) => value.name === pageName)

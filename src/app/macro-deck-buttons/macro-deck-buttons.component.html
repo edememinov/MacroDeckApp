@@ -116,7 +116,7 @@
                 
                 <sat-popover [anchor]="anchor" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
                   <div class="popover-class">
-                    <app-macro-deck-edit-buttons [button]="item"></app-macro-deck-edit-buttons>
+                    <app-macro-deck-edit-buttons [button]="item" (newItemEvent)="updateButton($event)"></app-macro-deck-edit-buttons>
                   </div>
 
                 </sat-popover>
