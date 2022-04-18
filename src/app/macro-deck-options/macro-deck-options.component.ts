@@ -5,6 +5,7 @@ import { MacroDeckOptions } from '../models/macrodeck-options'
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { ElectronService } from '../core/services';
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-macro-deck-options',
@@ -18,7 +19,7 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
   options: Observable<MacroDeckOptions>;
   unsubscriber = new Subject()
 
-  constructor(private formBuilder: FormBuilder, private optionsService: MacrodeckOptionsService, private _electron:ElectronService) { }
+  constructor(private formBuilder: FormBuilder, private optionsService: MacrodeckOptionsService, private _electron:ElectronService, private snackBarService: SnackbarService) { }
   ngOnDestroy(): void {
     this.unsubscriber.next();
     this.unsubscriber.complete();
@@ -55,6 +56,7 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
     }
     this.optionsService.setOptions(this.macrodeckOptions.value, 
       this._electron.ipcRenderer.sendSync('readUrl', '')).pipe().subscribe(value => {
+        this.snackBarService.showGenericSnackBar('Options saved', true)
 
     }, error => {
       console.log(error);

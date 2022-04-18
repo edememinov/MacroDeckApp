@@ -6,6 +6,7 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { MacrodeckButtonService } from '../services/macrodeck-button.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-macro-deck-buttons',
@@ -52,7 +53,7 @@ pageFile = {
   addFile = false;
   addFormGroup : FormGroup;
   createdFileName: string = null;
-  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private buttonService : MacrodeckButtonService) { }
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private buttonService : MacrodeckButtonService, private snackBarService: SnackbarService) { }
 
   ngOnDestroy(): void {
     this.unsubscriber$.next();
@@ -120,6 +121,7 @@ pageFile = {
       this.buttonService.createNewFile({fileName: this.addFormGroup.controls.name.value},  this._electron.ipcRenderer.sendSync('readUrl', '')).subscribe(value =>{
         this.createdFileName = this.addFormGroup.controls.name.value;
         this.addPageEnable();
+        this.snackBarService.showGenericSnackBar('File has been added', true)
     },
     error => {
       console.log(error);
@@ -152,6 +154,7 @@ pageFile = {
           console.log(error);
         })
       }
+      this.snackBarService.showGenericSnackBar('Page has been added', true)
     }
   }
 
@@ -165,12 +168,15 @@ pageFile = {
         //window.location.reload();
     },
     error => {
-      console.log(error);
+      this.snackBarService.showGenericSnackBar('An error has occured when saving the configuration', false)
     })
+    this.snackBarService.showGenericSnackBar('Configuration has been saved', true)
   }
 
   updateButton($event){
-    console.log($event);
+    let foundIndex = _.findIndex(this.buttonFile.buttons, $event.oldItem);
+    this.buttonFile.buttons[foundIndex] = $event.button;
+    this._electron.ipcRenderer.sendSync('writeMacrodeckData', JSON.stringify(this.buttonFile));
   }
 
   setPage(pageName){

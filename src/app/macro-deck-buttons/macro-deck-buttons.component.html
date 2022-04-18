@@ -14,26 +14,31 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <button mat-raised-button color="primary" (click)="addFileEnable()">Add file</button>
+            <button mat-raised-button color="primary" satPopoverAnchor #anchorFile="satPopoverAnchor" (click)="anchorFile.popover.toggle()">Add file</button>
           </form>
 
 
+          <sat-popover [anchor]="anchorFile" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <div *ngIf="addFile">
+                <form [formGroup]="addFormGroup">
+                  <div class="col-md-12">
+                    <mat-form-field class="form-field" appearance="outline">
+                      <mat-label> File name
+                      </mat-label>
+                      <input matInput formControlName="name" required>
+                    </mat-form-field>
+                  </div>
+                  <br />
+                  <div class="col-md-6">
+                    <button mat-raised-button color="primary" (click)="addPageOrFile() && anchorFile.popover.toggle()">Save</button>
+                  </div>
+                </form>
+               </div>
+            </div>
 
-         <div *ngIf="addFile">
-          <form [formGroup]="addFormGroup">
-            <div class="col-md-12">
-              <mat-form-field class="form-field" appearance="outline">
-                <mat-label> File name
-                </mat-label>
-                <input matInput formControlName="name" required>
-              </mat-form-field>
-            </div>
-            <br />
-            <div class="col-md-6">
-              <button mat-raised-button color="primary" (click)="addPageOrFile()">Save</button>
-            </div>
-          </form>
-         </div>
+          </sat-popover>
+         
 
 
 
@@ -53,24 +58,30 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <button mat-raised-button color="primary" (click)="addPageEnable()">Add page</button>
+            <button mat-raised-button color="primary" satPopoverAnchor #anchorPage="satPopoverAnchor" (click)="anchorPage.popover.toggle()">Add page</button>
           </form>
 
-          <div *ngIf="addPage">
-            <form [formGroup]="addFormGroup">
-              <div class="col-md-12">
-                <mat-form-field class="form-field" appearance="outline">
-                  <mat-label> Page name
-                  </mat-label>
-                  <input matInput formControlName="name" required>
-                </mat-form-field>
-              </div>
-              <br />
-              <div class="col-md-6">
-                <button mat-raised-button color="primary" (click)="addPageOrFile()">Save</button>
-              </div>
-            </form>
-           </div>
+          <sat-popover [anchor]="anchorPage" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <div>
+                <form [formGroup]="addFormGroup">
+                  <div class="col-md-12">
+                    <mat-form-field class="form-field" appearance="outline">
+                      <mat-label> Page name
+                      </mat-label>
+                      <input matInput formControlName="name" required>
+                    </mat-form-field>
+                  </div>
+                  <br />
+                  <div class="col-md-6">
+                    <button mat-raised-button color="primary" (click)="addPageOrFile()">Save</button>
+                  </div>
+                </form>
+               </div>
+            </div>
+
+          </sat-popover>
+          
 
         <div class="example-container col-md-6">
             <h2>On Device</h2>

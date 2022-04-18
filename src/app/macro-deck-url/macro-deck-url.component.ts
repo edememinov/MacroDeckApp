@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MacroDeckUrl } from '../models/macrodeck-url';
 import { ElectronService } from '../core/services/electron/electron.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-macro-deck-url',
@@ -15,8 +16,10 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
   url: Observable<MacroDeckUrl>;
   buttonsRead = new BehaviorSubject(false);
   unsubscriber = new Subject()
+  progressBarValue = 0;
+  progressBar = false;
   
-  constructor(private formBuilder: FormBuilder, private _electron:ElectronService) { }
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService) { }
 
   ngOnDestroy(): void {
     this.unsubscriber.next();
@@ -38,12 +41,25 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
 
   submit(){
     this._electron.ipcRenderer.send('writeUrl', this.urlOptions.controls.url.value);
+    this.snackBarService.showGenericSnackBar('Url saved', true)
   }
 
 
   saveMacroBoardData(){
-    this.buttonsRead.next(true);
+    this.progressBar = true;
+    this.snackBarService.showGenericSnackBar('Starting', true)
     this._electron.ipcRenderer.send('saveDeckboardData', '');
+    this.startTimer();
+    if(this.progressBarValue === 100){
+      this.snackBarService.showGenericSnackBar('Completed', true)
+    }
+
+  }
+
+  startTimer() {
+    let interval = setInterval(() => {
+      this.progressBarValue++;
+    },600)
   }
 
 }

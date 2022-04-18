@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '../core/services';
 import { ButtonTypes } from '../shared/models/enums';
 import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/button.model'
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-macro-deck-custom-buttons',
@@ -11,7 +12,7 @@ import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/but
 })
 export class MacroDeckCustomButtonsComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private _electron:ElectronService) { }
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService) { }
   selected = new FormControl('');
   customButton: FormGroup;
 
@@ -61,6 +62,7 @@ export class MacroDeckCustomButtonsComponent implements OnInit {
     }
 
     this._electron.ipcRenderer.sendSync('writeMacrodeckData', JSON.stringify(buttonFile));
+    this.snackBarService.showGenericSnackBar('Button has added', true)
     
   }
 

@@ -11,6 +11,7 @@
             </mat-error>
           </mat-form-field>
         </div>
+        <mat-progress-bar *ngIf="progressBar" mode="determinate" [value]="progressBarValue"></mat-progress-bar>
         <br />
         <div class="col-md-6">
           <button mat-raised-button color="primary" (click)="submit()">Save</button>
@@ -22,8 +23,5 @@
   
       </form>
     </div>
-    <ng-template #loading>
-        Getting buttons
-      </ng-template>
   </div>
   

@@ -29,6 +29,8 @@ import { AdminPanelModule } from './admin-panel/admin-panel.module'
 import { SafePipe } from './services/safe.pipe';
 import { AdminPanelUpdateModule } from './admin-panel-update/admin-panel-update.module';
 import { MacroDeckEditButtonsModule } from './macro-deck-edit-buttons/macro-deck-edit-buttons.module';
+import { GenericSnackbarModule } from './shared/generic-snackbar/generic-snackbar.module';
+import { SnackbarService } from './services/snackbar.service';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -53,6 +55,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     AdminPanelModule,
     AdminPanelUpdateModule,
     MacroDeckEditButtonsModule,
+    GenericSnackbarModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -62,7 +65,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     }),
     StoreModule.forRoot({}, {})
   ],
-  providers: [],
+  providers: [SnackbarService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

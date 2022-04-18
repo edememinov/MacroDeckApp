@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SnackbarService } from '../services/snackbar.service';
 import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/button.model';
 
 @Component({
@@ -9,12 +10,12 @@ import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/but
 })
 export class MacroDeckEditButtonsComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private snackBarService: SnackbarService) { }
   customButton: FormGroup;
 
   @Input() public button: MqttButton | MacroDeckButton | ApiCallButton;
 
-  @Output() newItemEvent = new EventEmitter<MqttButton | MacroDeckButton | ApiCallButton>();
+  @Output() newItemEvent = new EventEmitter<any>();
 
   ngOnInit(): void {
     this.customButton = this.formBuilder.group({
@@ -31,7 +32,32 @@ export class MacroDeckEditButtonsComponent implements OnInit {
   }
 
   submit(){
-    this.newItemEvent.emit(this.customButton.value);
+    this.snackBarService.showGenericSnackBar('Button saved', true)
+    switch(this.customButton.controls.type.value){
+      case 'apiCall':
+       let buttonApi = new ApiCallButton()
+       buttonApi.description = this.customButton.controls.description.value;
+       buttonApi.fingerprint = this.customButton.controls.fingerprint.value;
+       buttonApi.type = 'apiCall';
+       buttonApi.url = this.customButton.controls.url.value;
+       this.newItemEvent.emit({button: buttonApi, oldItem: this.button});
+       break;
+      case 'mqtt':
+        let buttonMqtt = new MqttButton()
+        buttonMqtt.description = this.customButton.controls.description.value;
+        buttonMqtt.payload = this.customButton.controls.payload.value;
+        buttonMqtt.type = 'mqtt';
+        buttonMqtt.topic = this.customButton.controls.topic.value;
+        this.newItemEvent.emit({button: buttonMqtt, oldItem: this.button});
+        break;
+      case 'socket':
+        let macroDeckButton = new MacroDeckButton()
+        macroDeckButton.command_id = this.customButton.controls.command_id.value;
+        macroDeckButton.description = this.customButton.controls.description.value;
+        macroDeckButton.type = 'socket';
+        this.newItemEvent.emit({button: macroDeckButton, oldItem: this.button});
+        break;
+    }
   }
 
 }

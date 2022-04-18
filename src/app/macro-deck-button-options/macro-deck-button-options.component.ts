@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ElectronService } from '../core/services';
 import { MacrodeckButtonOptionsService } from '../services/macrodeck-button-options.service';
 import { MacrodeckOptionsService } from '../services/macrodeck-options.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-macro-deck-button-options',
@@ -14,7 +15,11 @@ import { MacrodeckOptionsService } from '../services/macrodeck-options.service';
 })
 export class MacroDeckButtonOptionsComponent implements OnInit, OnDestroy {
 
-  constructor(private formBuilder: FormBuilder, private buttonOptionsService: MacrodeckButtonOptionsService, private _electron:ElectronService, private optionsService: MacrodeckOptionsService ) { }
+  constructor(private formBuilder: FormBuilder,
+    private buttonOptionsService: MacrodeckButtonOptionsService,
+    private _electron:ElectronService,
+    private optionsService: MacrodeckOptionsService,
+    private snackBarService: SnackbarService) { }
 
   ngOnDestroy(): void {
     this.unsubscribe.next();
@@ -59,9 +64,9 @@ export class MacroDeckButtonOptionsComponent implements OnInit, OnDestroy {
 
   submit(){
     this.buttonOptionsService.setOptions(this.macrodeckButtonOptions.value, this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscribe)).subscribe(value => {
-
+      this.snackBarService.showGenericSnackBar('Options have been saved', true)
     }, error => {
-
+      this.snackBarService.showGenericSnackBar('An error has occured when saving the options', false)
     });
   }
 
