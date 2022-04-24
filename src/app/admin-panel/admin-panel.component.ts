@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
+import { SafeHtml, SafeUrl } from '@angular/platform-browser';
 import { ElectronService } from '../core/services';
 import { SafePipe } from '../services/safe.pipe';
 
@@ -11,7 +11,7 @@ import { SafePipe } from '../services/safe.pipe';
 export class AdminPanelComponent implements OnInit {
 
   constructor(private _electron:ElectronService) { }
-  data: SafeHtml;
+  data: string;
 
   ngOnInit(): void {
     this.data = `http://${this._electron.ipcRenderer.sendSync('readUrl', '')}/home.html`;

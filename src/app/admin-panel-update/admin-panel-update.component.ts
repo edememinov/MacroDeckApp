@@ -17,7 +17,7 @@ export class AdminPanelUpdateComponent implements OnInit, OnDestroy {
     this.unsubscriber.next();
     this.unsubscriber.complete();
   }
-  data: SafeUrl;
+  data: string;
   firmwareVersion: string;
   latestFirmwareAvailable: string;
   unsubscriber = new Subject();

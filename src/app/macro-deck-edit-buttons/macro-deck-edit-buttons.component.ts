@@ -16,6 +16,7 @@ export class MacroDeckEditButtonsComponent implements OnInit {
   @Input() public button: MqttButton | MacroDeckButton | ApiCallButton;
 
   @Output() newItemEvent = new EventEmitter<any>();
+  @Output() deleteItemEvent = new EventEmitter<any>();
 
   ngOnInit(): void {
     this.customButton = this.formBuilder.group({
@@ -29,6 +30,44 @@ export class MacroDeckEditButtonsComponent implements OnInit {
     });
 
     this.customButton.patchValue(this.button);
+  }
+
+  deleteButtonConfirmation($event){
+    if($event){
+      this.deleteButton();
+    }
+  }
+
+  deleteButton(){
+    switch(this.customButton.controls.type.value){
+      case 'apiCall':
+       let buttonApi = new ApiCallButton()
+       buttonApi.description = this.customButton.controls.description.value;
+       buttonApi.fingerprint = this.customButton.controls.fingerprint.value;
+       buttonApi.type = 'apiCall';
+       buttonApi.url = this.customButton.controls.url.value;
+       this.deleteItemEvent.emit({button: buttonApi});
+       break;
+      case 'mqtt':
+        let buttonMqtt = new MqttButton()
+        buttonMqtt.description = this.customButton.controls.description.value;
+        buttonMqtt.payload = this.customButton.controls.payload.value;
+        buttonMqtt.type = 'mqtt';
+        buttonMqtt.topic = this.customButton.controls.topic.value;
+        this.deleteItemEvent.emit({button: buttonMqtt});
+        break;
+      case 'socket':
+        let macroDeckButton = new MacroDeckButton()
+        macroDeckButton.command_id = this.customButton.controls.command_id.value;
+        macroDeckButton.description = this.customButton.controls.description.value;
+        macroDeckButton.type = 'socket';
+        this.deleteItemEvent.emit({button: macroDeckButton});
+        break;
+    }
+  }
+
+  beautify(){
+    this.customButton.controls.payload.patchValue(JSON.stringify(JSON.parse(this.customButton.controls.payload.value), null, 2));
   }
 
   submit(){

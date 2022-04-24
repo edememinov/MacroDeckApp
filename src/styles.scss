@@ -22,6 +22,19 @@ body {
   background: white;
 }
 
+.popover-class {
+  background-color: white;
+  padding: 0 10px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 1px;
+}
+.popover-class div {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
 
 /**  Copyright 2017 Google Inc. All Rights Reserved.
     Use of this source code is governed by an MIT-style license that

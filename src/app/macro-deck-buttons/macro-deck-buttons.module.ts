@@ -12,6 +12,7 @@ import { ListFilterPipe } from '../services/listFilter.pipe';
 import { SearchBoxModule } from '../search-box/search-box.module';
 import { SatPopoverModule } from '@ncstate/sat-popover';
 import { MacroDeckEditButtonsModule } from '../macro-deck-edit-buttons/macro-deck-edit-buttons.module';
+import { ConfirmPopUpModule } from '../shared/confirm-pop-up/confirm-pop-up.module';
 
 
 
@@ -30,7 +31,8 @@ import { MacroDeckEditButtonsModule } from '../macro-deck-edit-buttons/macro-dec
     DragDropModule,
     SearchBoxModule,
     SatPopoverModule,
-    MacroDeckEditButtonsModule
+    MacroDeckEditButtonsModule,
+    ConfirmPopUpModule
   ]
 })
 export class MacroDeckButtonsModule { }

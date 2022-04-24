@@ -31,6 +31,8 @@ import { AdminPanelUpdateModule } from './admin-panel-update/admin-panel-update.
 import { MacroDeckEditButtonsModule } from './macro-deck-edit-buttons/macro-deck-edit-buttons.module';
 import { GenericSnackbarModule } from './shared/generic-snackbar/generic-snackbar.module';
 import { SnackbarService } from './services/snackbar.service';
+import { ConfirmPopUpModule } from './shared/confirm-pop-up/confirm-pop-up.module';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,6 +58,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     AdminPanelUpdateModule,
     MacroDeckEditButtonsModule,
     GenericSnackbarModule,
+    ConfirmPopUpModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -65,7 +68,11 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     }),
     StoreModule.forRoot({}, {})
   ],
-  providers: [SnackbarService],
+  providers: [SnackbarService,
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

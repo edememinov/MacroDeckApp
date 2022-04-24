@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MacroDeckUrl } from '../models/macrodeck-url';
 import { ElectronService } from '../core/services/electron/electron.service';
 import { SnackbarService } from '../services/snackbar.service';
+import { ReloaderService } from '../services/reloader.service';
 
 @Component({
   selector: 'app-macro-deck-url',
@@ -19,7 +20,7 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
   progressBarValue = 0;
   progressBar = false;
   
-  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService) { }
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService, private reloaderService: ReloaderService) { }
 
   ngOnDestroy(): void {
     this.unsubscriber.next();
@@ -34,7 +35,7 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
     this.urlOptions.controls.url.patchValue(this._electron.ipcRenderer.sendSync('readUrl', ''));
 
     this._electron.ipcRenderer.on("deckBoardDataDone", (event, args) => {
-      window.location.reload();
+      this.reloaderService.reloadAppAfterThreeSeconds(this.unsubscriber);
     });
 
   }

@@ -14,33 +14,35 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <button mat-raised-button color="primary" satPopoverAnchor #anchorFile="satPopoverAnchor" (click)="anchorFile.popover.toggle()">Add file</button>
+            <button mat-raised-button color="primary" [satPopoverAnchor] #anchorFile="satPopoverAnchor" (click)="anchorFile.popover.toggle()">Add file</button>
+            <button mat-raised-button color="primary" [satPopoverAnchor]="confirmPopoverFile" (click)="confirmPopoverFile.toggle()">Delete</button>
           </form>
 
-
-          <sat-popover [anchor]="anchorFile" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+          <sat-popover #confirmPopoverFile [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
             <div class="popover-class">
-              <div *ngIf="addFile">
+              <app-confirm-pop-up message="Are you sure you want to delete this file?" (confirmEvent)="deleteFileConfirmation($event); confirmPopoverFile.close();"></app-confirm-pop-up>
+            </div>
+          </sat-popover>
+          <sat-popover [anchor]="anchorFile" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <div>
                 <form [formGroup]="addFormGroup">
                   <div class="col-md-12">
                     <mat-form-field class="form-field" appearance="outline">
                       <mat-label> File name
                       </mat-label>
-                      <input matInput formControlName="name" required>
+                      <input matInput formControlName="fileName" required>
                     </mat-form-field>
                   </div>
                   <br />
                   <div class="col-md-6">
-                    <button mat-raised-button color="primary" (click)="addPageOrFile() && anchorFile.popover.toggle()">Save</button>
+                    <button mat-raised-button color="primary" (click)="addPageOrFile(true); anchorPage.popover.toggle();">Save</button>
                   </div>
                 </form>
                </div>
             </div>
-
           </sat-popover>
-         
-
-
+        
 
 
         <form class="example-form">
@@ -58,10 +60,24 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-            <button mat-raised-button color="primary" satPopoverAnchor #anchorPage="satPopoverAnchor" (click)="anchorPage.popover.toggle()">Add page</button>
+            <button mat-raised-button color="primary" [satPopoverAnchor] #anchorPage="satPopoverAnchor" (click)="anchorPage.popover.open()">Add page</button>
+            <button mat-raised-button color="primary" #anchorPageEdit="satPopoverAnchor" [satPopoverAnchor]="confirmPopoverPageName" (click)="confirmPopoverPageName.toggle()">Edit</button>
           </form>
 
-          <sat-popover [anchor]="anchorPage" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+          <sat-popover #confirmPopoverPageName [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <button mat-raised-button color="primary" [satPopoverAnchor]="confirmPopoverPage" (click)="confirmPopoverPage.toggle()">Delete</button>
+              <button mat-raised-button color="primary" (click)="anchorPageEdit.popover.toggle(); setPageNameInPopOver();">Edit</button>
+            </div>
+          </sat-popover>
+
+          <sat-popover #confirmPopoverPage [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <app-confirm-pop-up message="Are you sure you want to delete this page?" (confirmEvent)="deletePageConfirmation($event); confirmPopoverPage.close();"></app-confirm-pop-up>
+            </div>
+          </sat-popover>
+          <!-- edit page name -->
+          <sat-popover [anchor]="anchorPageEdit" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
             <div class="popover-class">
               <div>
                 <form [formGroup]="addFormGroup">
@@ -69,19 +85,57 @@
                     <mat-form-field class="form-field" appearance="outline">
                       <mat-label> Page name
                       </mat-label>
-                      <input matInput formControlName="name" required>
+                      <input matInput formControlName="pageName" required>
                     </mat-form-field>
                   </div>
                   <br />
                   <div class="col-md-6">
-                    <button mat-raised-button color="primary" (click)="addPageOrFile()">Save</button>
+                    <button mat-raised-button color="primary" (click)="editPageName(); anchorPage.popover.close();">Save</button>
                   </div>
                 </form>
                </div>
             </div>
 
           </sat-popover>
-          
+          <!-- add a new page  -->
+          <sat-popover [anchor]="anchorPage" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <div>
+                <form [formGroup]="addFormGroup">
+                  <div class="col-md-12">
+                    <mat-form-field class="form-field" appearance="outline">
+                      <mat-label> Page name
+                      </mat-label>
+                      <input matInput formControlName="pageName" required>
+                    </mat-form-field>
+                  </div>
+                  <br />
+                  <div class="col-md-6">
+                    <button mat-raised-button color="primary" (click)="addPageOrFile(false); anchorPage.popover.close(); anchorFile.popover.close();">Save</button>
+                  </div>
+                </form>
+               </div>
+            </div>
+
+          </sat-popover>
+        
+          <div class="example-container col-md-6">
+            <h2>Delete button</h2>
+            <br/>
+            <br/>
+            <div class="max-height-scrollable" style="margin-top: 1%;">
+                <div
+              cdkDropList
+              #deleteBox="cdkDropList"
+              [cdkDropListData]="deleteList"
+              [cdkDropListConnectedTo]="[onDevice]"
+              class="example-list"
+              (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let item of deleteList" cdkDrag>{{item.description}}</div>
+            </div>
+            </div>
+            
+          </div>
 
         <div class="example-container col-md-6">
             <h2>On Device</h2>
@@ -93,7 +147,7 @@
               cdkDropList
               #onDevice="cdkDropList"
               [cdkDropListData]="pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy"
-              [cdkDropListConnectedTo]="[allAvailable]"
+              [cdkDropListConnectedTo]="[allAvailable, deleteBox]"
               class="example-list"
               (cdkDropListDropped)="drop($event)">
               <div class="example-box" *ngFor="let item of pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy" cdkDrag>{{item.description}}</div>
@@ -101,6 +155,8 @@
             </div>
             
           </div>
+
+          
           
           <div class="example-container col-md-6">
             <h2>All available buttons</h2>
@@ -121,13 +177,13 @@
                     <p>{{item.description}}</p>
                   </div>
                   <div class="col-md-6" style="float:right; margin-top: 1%;">
-                    <button satPopoverAnchor #anchor="satPopoverAnchor" (click)="anchor.popover.toggle()"><mat-icon >edit</mat-icon></button>
+                    <button [satPopoverAnchor] #anchor="satPopoverAnchor" (click)="anchor.popover.toggle()"><mat-icon >edit</mat-icon></button>
                   </div>
                 </div>
                 
-                <sat-popover [anchor]="anchor" hasBackdrop verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+                <sat-popover [anchor]="anchor" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
                   <div class="popover-class">
-                    <app-macro-deck-edit-buttons [button]="item" (newItemEvent)="updateButton($event)"></app-macro-deck-edit-buttons>
+                    <app-macro-deck-edit-buttons [button]="item" (deleteItemEvent)="deleteButton($event)" (newItemEvent)="updateButton($event)"></app-macro-deck-edit-buttons>
                   </div>
 
                 </sat-popover>

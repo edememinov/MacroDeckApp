@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MacroDeckEditButtonsComponent } from './macro-deck-edit-buttons.component';
 import { MaterialModule } from '../material/material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmPopUpModule } from '../shared/confirm-pop-up/confirm-pop-up.module';
+import { SatPopoverModule } from '@ncstate/sat-popover';
 
 
 
@@ -14,7 +16,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SatPopoverModule,
+    ConfirmPopUpModule
   ],
   exports: [MacroDeckEditButtonsComponent]
 })

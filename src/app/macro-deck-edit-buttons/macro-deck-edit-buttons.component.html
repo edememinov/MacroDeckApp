@@ -54,6 +54,15 @@
         <div class="col-md-6" style="float:right;">
             <button mat-raised-button color="primary" (click)="submit()">Save</button>
         </div>
+        <div class="col-md-6" style="float:left;">
+            <button mat-raised-button color="primary" [satPopoverAnchor]="confirmPopoverButton" (click)="confirmPopoverButton.toggle()">Delete</button>
+        </div>
+
+        <sat-popover #confirmPopoverButton [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+            <div class="popover-class">
+              <app-confirm-pop-up message="Are you sure you want to delete this page?" (confirmEvent)="deleteButtonConfirmation($event); confirmPopoverButton.close();"></app-confirm-pop-up>
+            </div>
+          </sat-popover>
     
         </form>
 </div>

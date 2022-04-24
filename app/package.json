@@ -1,11 +1,12 @@
 {
-  "name": "angular-electron",
-  "version": "10.1.0",
+  "name": "macrodeck_management_software",
+  "version": "1.0.0",
   "main": "main.js",
   "private": true,
   "dependencies": {
     "@electron/remote": "1.2.0",
-    "electron-builder-squirrel-windows": "^23.0.2",
+    "electron-builder-squirrel-windows": "23.0.2",
+    "electron-squirrel-startup": "1.0.0",
     "follow-redirects": "^1.13.0",
     "ip": "^1.1.5",
     "json-concat": "0.0.1",

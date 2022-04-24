@@ -9,11 +9,14 @@ import { fork } from 'child_process';
 // Initialize remote module
 require('@electron/remote/main').initialize();
 
+
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
 function createWindow(): BrowserWindow {
+
+  if(require('electron-squirrel-startup')) return;
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -35,24 +38,27 @@ function createWindow(): BrowserWindow {
 
   if (serve) {
     win.webContents.openDevTools();
+    win.webContents.on('did-fail-load', () => win.loadURL('http://localhost:4200'));
     require('electron-reload')(__dirname, {
       electron: require(path.join(__dirname, '/../node_modules/electron'))
     });
     win.loadURL('http://localhost:4200');
   } else {
     // Path when running electron executable
-    let pathIndex = './index.html';
+    // let pathIndex = './index.html';
 
-    if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-       // Path when running electron in local folder
-      pathIndex = '../dist/index.html';
-    }
+    // if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
+    //    // Path when running electron in local folder
+    //   pathIndex = '../dist/index.html';
+    // }
 
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, pathIndex),
-      protocol: 'file:',
-      slashes: true
-    }));
+    win.loadURL(
+      url.format({
+        pathname: path.join(__dirname, `/dist/index.html`),
+        protocol: "file:",
+        slashes: true
+      })
+    );
   }
 
   // Emitted when the window is closed.
@@ -161,6 +167,7 @@ ipcMain.on('writeMacrodeckData', (event, data) => {
   writeToDeckboardButtonFile(data);
   event.returnValue = 'Ok'
 });
+
 
 ipcMain.on('saveDeckboardData', (event, data) => {
   let p = path.join(__dirname, 'deckboard_getData','merge-files.js');
