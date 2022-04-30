@@ -54,7 +54,7 @@ function createWindow(): BrowserWindow {
 
     win.loadURL(
       url.format({
-        pathname: path.join(__dirname, `/dist/index.html`),
+        pathname: path.join(__dirname, `/index.html`),
         protocol: "file:",
         slashes: true
       })
@@ -124,6 +124,26 @@ function writeToDeckboardButtonFile(data) {
   });
 }
 
+function writeToDeckboardCustomButtonFile(data) {
+  let p = path.join(__dirname, 'deckboard_getData', 'finalData', 'customButtons.json');
+  fs.writeFile(p,data , function(err) {
+    if(err) {
+        console.log(err);
+    }
+    console.log("The file was saved!");
+  });
+}
+
+function readToDeckboardCustomButtonFile(){
+  let p = path.join(__dirname, 'deckboard_getData', 'finalData', 'customButtons.json');
+  if(fs.existsSync(p)){
+    return fs.readFileSync(p,'utf8')
+  }else {
+    fs.writeFileSync(p, `{"buttons":[]}`);
+  }
+  
+}
+
 function readUrl(): string{
   let p = path.join(__dirname, 'macrodeck_url.json');
   if(fs.existsSync(p)){
@@ -138,16 +158,11 @@ function readUrl(): string{
 
 function readDeckboardFile(){
   let p = path.join(__dirname, 'deckboard_getData', 'finalData', 'finalButton.json');
-  console.log(p);
   if(fs.existsSync(p)){
     return fs.readFileSync(p,'utf8')
   }
   else{
-    fs.writeFileSync(p, `{
-      "command_id": 0,
-      "type": "mock",
-      "description": "Nothing found"
-    },`);
+    fs.writeFileSync(p, `{"buttons":[]}`);
   }
 }
 
@@ -165,6 +180,16 @@ ipcMain.on('readMacrodeckData', (event, data) => {
 
 ipcMain.on('writeMacrodeckData', (event, data) => {
   writeToDeckboardButtonFile(data);
+  event.returnValue = 'Ok'
+});
+
+
+ipcMain.on('readCustomMacrodeckData', (event, data) => {
+  event.returnValue = readToDeckboardCustomButtonFile();
+});
+
+ipcMain.on('writeCustomMacrodeckData', (event, data) => {
+  writeToDeckboardCustomButtonFile(data);
   event.returnValue = 'Ok'
 });
 

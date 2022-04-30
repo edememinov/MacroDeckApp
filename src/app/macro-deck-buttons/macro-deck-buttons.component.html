@@ -126,6 +126,7 @@
             <div class="max-height-scrollable" style="margin-top: 1%;">
                 <div
               cdkDropList
+              [id]="containerIdDelete"
               #deleteBox="cdkDropList"
               [cdkDropListData]="deleteList"
               [cdkDropListConnectedTo]="[onDevice]"
@@ -145,6 +146,7 @@
             <div class="max-height-scrollable">
                 <div
               cdkDropList
+              [id]="containerIdOnDevice"
               #onDevice="cdkDropList"
               [cdkDropListData]="pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy"
               [cdkDropListConnectedTo]="[allAvailable, deleteBox]"
@@ -166,6 +168,7 @@
             <div class="max-height-scrollable">
                 <div
               cdkDropList
+              [id]="containerIdAllButtons"
               #allAvailable="cdkDropList"
               [cdkDropListData]="buttonFile.buttons | listFilter: allAvailableFilter:dummy"
               [cdkDropListConnectedTo]="[onDevice]"

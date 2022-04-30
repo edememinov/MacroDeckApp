@@ -41,7 +41,7 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
   }
   
   submit(){
-    let buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readMacrodeckData', ''));
+    let buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readCustomMacrodeckData', ''));
     switch(this.selected.value){
       case 'apiCall':
        let buttonApi = new ApiCallButton()
@@ -67,10 +67,10 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
         buttonFile.buttons?.push(macroDeckButton)
         break;
     }
-
-    this._electron.ipcRenderer.sendSync('writeMacrodeckData', JSON.stringify(buttonFile));
+//hier
+    this._electron.ipcRenderer.sendSync('writeCustomMacrodeckData', JSON.stringify(buttonFile));
     this.snackBarService.showGenericSnackBar('Button has added', true)
-    this.reloaderService.reloadAppAfterThreeSeconds(this.unsubscriber$);
+    //this.reloaderService.reloadAppAfterThreeSeconds();
   }
 
 }

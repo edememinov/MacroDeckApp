@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { ElectronService } from '../core/services';
 
 @Injectable({
@@ -8,12 +8,11 @@ import { ElectronService } from '../core/services';
 })
 export class ReloaderService {
 
-  constructor(private _electron:ElectronService) { }
+  constructor() { }
 
-  reloadAppAfterThreeSeconds(unsubscriber){
+  reloadAppAfterThreeSeconds(){
     const pollTimer = timer(3000);
-    pollTimer.pipe(takeUntil(unsubscriber)).subscribe(() => {
-      this._electron.ipcRenderer.send('WILL_RELOAD');
+    pollTimer.pipe(first()).subscribe(() => {
       window.location.reload();
     });
   }

@@ -35,7 +35,7 @@ export class MacroDeckUrlComponent implements OnInit, OnDestroy {
     this.urlOptions.controls.url.patchValue(this._electron.ipcRenderer.sendSync('readUrl', ''));
 
     this._electron.ipcRenderer.on("deckBoardDataDone", (event, args) => {
-      this.reloaderService.reloadAppAfterThreeSeconds(this.unsubscriber);
+      //this.reloaderService.reloadAppAfterThreeSeconds();
     });
 
   }
