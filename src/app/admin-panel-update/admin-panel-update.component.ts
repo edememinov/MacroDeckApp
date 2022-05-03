@@ -23,10 +23,10 @@ export class AdminPanelUpdateComponent implements OnInit, OnDestroy {
   unsubscriber = new Subject();
 
   ngOnInit(): void {
-    this.firmwareService.getVersion(this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
+    this.firmwareService.getVersionMacroDeck(this._electron.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
       this.firmwareVersion = data;
     })
-    this.firmwareService.getLatestVersion().pipe(takeUntil(this.unsubscriber)).subscribe(data => {
+    this.firmwareService.getLatestVersionMacroDeck().pipe(takeUntil(this.unsubscriber)).subscribe(data => {
       const lines = data.split("\n");
       for(let x = 0; x < lines.length; x++){
         if(lines[x].includes('FirmwareVersion')){

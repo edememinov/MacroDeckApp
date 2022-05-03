@@ -5,30 +5,51 @@
 <mat-sidenav-container class="example-container" autosize>
 	<mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
 		<mat-nav-list>
-			<!-- <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
-				<span class="full-width" *ngIf="isExpanded || isShowing">Parent Menu</span>
-				<mat-icon mat-list-icon>home</mat-icon>
-				<mat-icon class="menu-button" [ngClass]="{'rotated' : showSubmenu}" *ngIf="isExpanded || isShowing">expand_more</mat-icon>
+			<mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+				<p class="full-width" *ngIf="isExpanded || isShowing">Device options</p>
+				<mat-icon [matBadgeHidden]="checkHiddenOptions()" matBadge="1" matBadgeColor="warn" mat-list-icon>developer_board</mat-icon>
+				<mat-icon class="menu-button" [ngClass]="{'rotated' : showSubmenu}" *ngIf="isShowing || isExpanded">expand_more</mat-icon>
 			</mat-list-item>
-			<div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="isShowing || isExpanded">
-				<a mat-list-item href="...">Submenu Item 1</a>
-				<a mat-list-item href="...">Submenu Item 2</a>
-				<mat-list-item (click)="showSubSubMenu = !showSubSubMenu" class="parent">
-					<span class="full-width" *ngIf="isExpanded || isShowing">Nested Menu</span>
-					<mat-icon class="menu-button" [ngClass]="{'rotated' : showSubSubMenu}" *ngIf="isExpanded || isShowing">expand_more</mat-icon>
+			<div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="(isShowing || isExpanded) && showSubmenu">
+				<mat-list-item>
+					<mat-icon>touch_app</mat-icon>
+					<a mat-list-item routerLink="/macrodeckbuttonoptions">Button Configuration</a>
 				</mat-list-item>
-				<div class="submenu" [ngClass]="{'expanded' : showSubSubMenu}" *ngIf="isShowing || isExpanded">
-					<mat-list-item>SubSubmenu Item 1</mat-list-item>
-					<mat-list-item>SubSubmenu Item 2</mat-list-item>
+				<mat-list-item>
+					<mat-icon>settings</mat-icon>
+					<a mat-list-item routerLink="/macrodecksettings">Settings</a>
+				</mat-list-item>
+				<mat-list-item>
+					<mat-icon>http</mat-icon>
+					<a mat-list-item routerLink="/macrodeckurl">Set URL</a>
+				</mat-list-item>
+
+				<mat-list-item (click)="showAdminOptions = !showAdminOptions" class="parent">
+					<mat-icon [matBadgeHidden]="checkHiddenAdmin()" matBadge="1" matBadgeColor="warn">perm_identity</mat-icon>
+					<p class="full-width" *ngIf="isExpanded || isShowing">Admin</p>
+					<mat-icon class="menu-button" [ngClass]="{'rotated' : showAdminOptions}" *ngIf="(isShowing || isExpanded) && showSubmenu">expand_more</mat-icon>
+				</mat-list-item>
+				<div class="submenu" [ngClass]="{'expanded' : showAdminOptions}" *ngIf="(isShowing || isExpanded) && showAdminOptions">
+					<mat-list-item><mat-icon>wifi</mat-icon><a mat-list-item routerLink="/adminpanel">Webserver</a></mat-list-item>
+					<mat-list-item><mat-icon [matBadgeHidden]="checkHiddenFirmware()" matBadge="1" matBadgeColor="warn">security</mat-icon><a mat-list-item routerLink="/adminpanelupdate">Device firmware</a></mat-list-item>
 				</div>
-			</div> -->
-      <a mat-list-item routerLink="/macrodeckbuttons">Buttons</a>
-      <a mat-list-item routerLink="/macrodecksettings">Options</a>
-      <a mat-list-item routerLink="/macrodeckbuttonoptions">Button Configuration</a>
-	  <a mat-list-item routerLink="/macrodeckurl">Set URL</a>
-	  <a mat-list-item routerLink="/macrodeckcustombuttons">Create a custom button</a>
-	  <a mat-list-item routerLink="/adminpanel">Admin panel</a>
-	  <a mat-list-item routerLink="/adminpanelupdate">Update device firmware</a>
+			</div>
+			<mat-list-item (click)="showButtonOptions = !showButtonOptions" class="parent">
+				<p class="full-width" *ngIf="isExpanded || isShowing">Buttons</p>
+				<mat-icon mat-list-icon>keyboard</mat-icon>
+				<mat-icon class="menu-button" [ngClass]="{'rotated' : showButtonOptions}" *ngIf="isShowing || isExpanded">expand_more</mat-icon>
+			</mat-list-item>
+			<div class="submenu" [ngClass]="{'expanded' : showButtonOptions}" *ngIf="(isShowing || isExpanded) && showButtonOptions">
+				<mat-list-item>
+					<mat-icon>settings_remote</mat-icon>
+					<a mat-list-item routerLink="/macrodeckbuttons">Set buttons for device</a>
+				</mat-list-item>
+				<mat-list-item>
+					<mat-icon>gamepad</mat-icon>
+					<a mat-list-item routerLink="/macrodeckcustombuttons">Create a custom button</a>
+				</mat-list-item>
+			</div>
+			<mat-list-item *ngIf="updateAvailableMMS"><mat-icon matBadge="1" matBadgeColor="warn">security</mat-icon><a mat-list-item (click)="updateMMS()">Update software</a></mat-list-item>
 		</mat-nav-list>
     <mat-nav-list>
 </mat-nav-list>

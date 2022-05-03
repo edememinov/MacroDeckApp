@@ -2,8 +2,9 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
+import * as download from 'electron-dl';
 
-import { fork } from 'child_process';
+import { fork, execFile } from 'child_process';
 
 
 // Initialize remote module
@@ -208,5 +209,22 @@ ipcMain.on('saveDeckboardData', (event, data) => {
   child.on('message', (msg) => {
     event.sender.send(msg.toString());
 })
+
 });
 
+ipcMain.on('downloadMMS', (event, data) => {
+  console.log(__dirname);
+  console.log('I AM DOING MY PART');
+  download.download(win, data, {directory:__dirname + 'temp/'})
+    .then(dl => {
+
+      execFile(dl.getSavePath(), function(err, data) {
+        console.log(err)
+        console.log(data.toString());
+      });
+
+      
+    })
+    .catch(console.error);
+    event.returnValue = 'Ok'
+})

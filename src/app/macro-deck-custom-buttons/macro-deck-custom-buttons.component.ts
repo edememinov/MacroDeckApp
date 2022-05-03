@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '../core/services';
-import { ButtonTypes } from '../shared/models/enums';
 import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/button.model'
 import { SnackbarService } from '../services/snackbar.service';
 import { Subject } from 'rxjs';
@@ -71,6 +70,7 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
     this._electron.ipcRenderer.sendSync('writeCustomMacrodeckData', JSON.stringify(buttonFile));
     this.snackBarService.showGenericSnackBar('Button has added', true)
     //this.reloaderService.reloadAppAfterThreeSeconds();
+    this.customButton.reset();
   }
 
 }
