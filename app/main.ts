@@ -6,12 +6,6 @@ import * as download from 'electron-dl';
 
 import * as md5 from 'spark-md5';
 
-import * as Blob from 'node-blob';
-
-var FormData = require('form-data');
-
-var XMLHttpRequest = require('xhr2');
-
 import { fork, execFile } from 'child_process';
 
 
@@ -250,6 +244,11 @@ ipcMain.on('downloadFirmware', (event, data) => {
     });
 
     
+})
+
+
+ipcMain.on('getVersion', (event, data) => {
+  event.returnValue = app.getVersion();
 })
 
 

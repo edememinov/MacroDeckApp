@@ -1,6 +1,6 @@
 {
   "name": "macrodeck_management_software",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Management software for the Macrodeck",
   "homepage": "https://github.com/edememinov/MacroDeckApp",
   "author": {
@@ -53,14 +53,11 @@
     "@ngrx/store": "12.4.0",
     "electron-builder-squirrel-windows": "23.0.2",
     "electron-squirrel-startup": "1.0.0",
-    "form-data": "4.0.0",
     "ip": "1.1.5",
     "lodash": "4.17.21",
     "rxjs": "~6.6.0",
     "socket.io-client": "4.4.1",
-    "ts-md5": "1.2.11",
     "tslib": "^2.1.0",
-    "xhr2": "0.2.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

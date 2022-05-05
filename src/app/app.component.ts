@@ -129,7 +129,9 @@ export class AppComponent implements OnInit {
   checkUpdateAvailableMMS(){
     this.firmwareService.getLatestVersionMMS().pipe(takeUntil(this.unsubscriber)).subscribe(data =>{
       let latestVersionAvailable = data.version;
-      let currentVersion = process.env.npm_package_version;
+      let currentVersion = this.electronService.ipcRenderer.sendSync('getVersion', '');
+
+      console.log(currentVersion);
 
       if(this.isNewerVersion(currentVersion, latestVersionAvailable)){
         this.updateAvailableMMS = true;
