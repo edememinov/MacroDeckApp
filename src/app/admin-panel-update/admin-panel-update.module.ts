@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminPanelUpdateComponent as AdminPanelUpdateComponent } from './admin-panel-update.component';
 import { SafePipe } from '../services/safe.pipe';
 import { AdminPanelModule } from '../admin-panel/admin-panel.module';
+import { MaterialModule } from '../material/material/material.module';
 
 
 
@@ -12,7 +13,8 @@ import { AdminPanelModule } from '../admin-panel/admin-panel.module';
   ],
   imports: [
     CommonModule,
-    AdminPanelModule
+    AdminPanelModule,
+    MaterialModule
   ]
 })
 export class AdminPanelUpdateModule { }

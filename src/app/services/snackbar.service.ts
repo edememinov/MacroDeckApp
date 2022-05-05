@@ -9,12 +9,26 @@ export class SnackbarService {
 
   constructor(private snackBar: MatSnackBar) { }
   
-  showGenericSnackBar(message, isSuccessMessage){
-    this.snackBar.openFromComponent(GenericSnackbarComponent, {
-      data:{success: isSuccessMessage, textToShow: message},
-      verticalPosition: 'top',
-      duration: 5000,
-      panelClass: ['white-snackbar']
-    });
+  showGenericSnackBar(message, isSuccessMessage, autoDisappear = true, duration = 5000){
+    if(autoDisappear){
+      this.snackBar.openFromComponent(GenericSnackbarComponent, {
+        data:{success: isSuccessMessage, textToShow: message},
+        verticalPosition: 'top',
+        duration: duration,
+        panelClass: ['white-snackbar']
+      });
+    }
+    else{
+      this.snackBar.openFromComponent(GenericSnackbarComponent, {
+        data:{success: isSuccessMessage, textToShow: message},
+        verticalPosition: 'top',
+        panelClass: ['white-snackbar']
+      });
+    }
+    
+  }
+
+  hideAllSnackbars(){
+    this.snackBar.dismiss();
   }
 }

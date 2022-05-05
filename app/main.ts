@@ -4,6 +4,14 @@ import * as fs from 'fs';
 import * as url from 'url';
 import * as download from 'electron-dl';
 
+import * as md5 from 'spark-md5';
+
+import * as Blob from 'node-blob';
+
+var FormData = require('form-data');
+
+var XMLHttpRequest = require('xhr2');
+
 import { fork, execFile } from 'child_process';
 
 
@@ -213,8 +221,7 @@ ipcMain.on('saveDeckboardData', (event, data) => {
 });
 
 ipcMain.on('downloadMMS', (event, data) => {
-  console.log(__dirname);
-  console.log('I AM DOING MY PART');
+  clearDirectory(__dirname + 'temp/');
   download.download(win, data, {directory:__dirname + 'temp/'})
     .then(dl => {
 
@@ -228,3 +235,33 @@ ipcMain.on('downloadMMS', (event, data) => {
     .catch(console.error);
     event.returnValue = 'Ok'
 })
+
+ipcMain.on('downloadFirmware', (event, data) => {
+  clearDirectory(__dirname + 'temp/');
+  download.download(win, data.url, {directory:__dirname + 'temp/'})
+    
+    .then(dl => {
+      const binary = fs.readFileSync(dl.getSavePath());
+      
+      const md5Buffer = md5.hashBinary(dl.getSavePath());
+
+      event.returnValue = {md5: md5Buffer, file: binary};
+
+    });
+
+    
+})
+
+
+function clearDirectory(directory){
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+  
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), err => {
+        if (err) throw err;
+      });
+    }
+  });
+}
+

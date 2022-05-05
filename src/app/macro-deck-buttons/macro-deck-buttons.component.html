@@ -120,19 +120,36 @@
           </sat-popover>
         
           <div class="example-container col-md-6">
-            <h2>Delete button</h2>
-            <br/>
-            <br/>
+            <h2>Custom buttons</h2>
+            <app-search-box
+                (textChanged)="customButtonFilter = $event"
+            ></app-search-box>
             <div class="max-height-scrollable" style="margin-top: 1%;">
                 <div
               cdkDropList
-              [id]="containerIdDelete"
+              [id]="containerIdCustom"
               #deleteBox="cdkDropList"
-              [cdkDropListData]="deleteList"
+              [cdkDropListData]="customButtonFile.buttons | listFilter: customButtonFilter:dummy"
               [cdkDropListConnectedTo]="[onDevice]"
               class="example-list"
               (cdkDropListDropped)="drop($event)">
-              <div class="example-box" *ngFor="let item of deleteList" cdkDrag>{{item.description}}</div>
+              <div class="example-box" *ngFor="let item of customButtonFile.buttons | listFilter: customButtonFilter:dummy" cdkDrag>
+                <div class="row" style="width: 100%;">
+                  <div class="col-md-6" style="float:left;">
+                    <p>{{item.description}}</p>
+                  </div>
+                  <div class="col-md-6" style="float:right; margin-top: 1%;">
+                    <button [satPopoverAnchor] #anchor="satPopoverAnchor" (click)="anchor.popover.toggle()"><mat-icon >edit</mat-icon></button>
+                  </div>
+                </div>
+                
+                <sat-popover [anchor]="anchor" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+                  <div class="popover-class">
+                    <app-macro-deck-edit-buttons [button]="item" (deleteItemEvent)="deleteButton($event); anchor.popover.close()" (newItemEvent)="updateButton($event); anchor.popover.close()"></app-macro-deck-edit-buttons>
+                  </div>
+
+                </sat-popover>
+              </div>
             </div>
             </div>
             
@@ -152,7 +169,23 @@
               [cdkDropListConnectedTo]="[allAvailable, deleteBox]"
               class="example-list"
               (cdkDropListDropped)="drop($event)">
-              <div class="example-box" *ngFor="let item of pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy" cdkDrag>{{item.description}}</div>
+              <div class="example-box" *ngFor="let item of pageFile.pages[pageNumber].buttons | listFilter: onDeviceFilter:dummy" cdkDrag>
+                <div class="row" style="width: 100%;">
+                  <div class="col-md-6" style="float:left;">
+                    <p>{{item.description}}</p>
+                  </div>
+                  <div class="col-md-6" style="float:right; margin-top: 1%;">
+                    <button [satPopoverAnchor] #anchor="satPopoverAnchor" (click)="anchor.popover.toggle()"><mat-icon >edit</mat-icon></button>
+                  </div>
+                </div>
+                
+                <sat-popover [anchor]="anchor" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
+                  <div class="popover-class">
+                    <app-macro-deck-edit-buttons [button]="item" (deleteItemEvent)="deleteButton($event, true);anchor.popover.close()" (newItemEvent)="updateButton($event, true);anchor.popover.close()"></app-macro-deck-edit-buttons>
+                  </div>
+
+                </sat-popover>
+              </div>
             </div>
             </div>
             
@@ -186,7 +219,7 @@
                 
                 <sat-popover [anchor]="anchor" [hasBackdrop]="true" verticalAlign="below" backdropClass="white-background" panelClass="white-background">
                   <div class="popover-class">
-                    <app-macro-deck-edit-buttons [button]="item" (deleteItemEvent)="deleteButton($event)" (newItemEvent)="updateButton($event)"></app-macro-deck-edit-buttons>
+                    <app-macro-deck-edit-buttons [button]="item" (deleteItemEvent)="deleteButton($event);anchor.popover.close()" (newItemEvent)="updateButton($event);anchor.popover.close()"></app-macro-deck-edit-buttons>
                   </div>
 
                 </sat-popover>

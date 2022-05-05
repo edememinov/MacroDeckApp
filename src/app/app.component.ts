@@ -34,7 +34,12 @@ export class AppComponent implements OnInit {
   hiddenAdmin: boolean = false;
   hiddenFirmware: boolean = false;
 
+  deviceNotAvailable: boolean = false;
+
   updateAvailableMMS: boolean = false;
+
+  intervalPollerOne: NodeJS.Timer;
+  intervalPollerTwo: NodeJS.Timer;
 
   unsubscriber = new Subject();
 
@@ -59,30 +64,54 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.checkAvailableUpdateMacroDeck();
     this.checkUpdateAvailableMMS();
-    setInterval(() => {
+    this.intervalPollerOne = setInterval(() => {
       this.checkAvailableUpdateMacroDeck();
       this.checkUpdateAvailableMMS();
-    }, 1500000);
+    }, 150000);
   }
 
   checkAvailableUpdateMacroDeck(){
     this.firmwareService.getVersionMacroDeck(this.electronService.ipcRenderer.sendSync('readUrl', '')).pipe(takeUntil(this.unsubscriber)).subscribe(data => {
       this.firmwareVersion = data;
-    })
-    this.firmwareService.getLatestVersionMacroDeck().pipe(takeUntil(this.unsubscriber)).subscribe(data => {
-      const lines = data.split("\n");
-      for(let x = 0; x < lines.length; x++){
-        if(lines[x].includes('FirmwareVersion')){
-          this.latestFirmwareAvailable = lines[x].split("\"")[1];
-        }
+      if(this.deviceNotAvailable){
+        this.snackBarService.hideAllSnackbars();
+        this.deviceNotAvailable = false;
+        clearInterval(this.intervalPollerTwo);
       }
-    });
-    if(this.firmwareVersion === this.latestFirmwareAvailable){
-      this.updateAvailableMacroDeck = false;
-    }
-    else{
-      this.updateAvailableMacroDeck = true;
-    }
+      this.firmwareService.getLatestVersionMacroDeck().pipe(takeUntil(this.unsubscriber)).subscribe(file => {
+        const lines = file.split("\n");
+        for(let x = 0; x < lines.length; x++){
+          if(lines[x].includes('FirmwareVersion')){
+            this.latestFirmwareAvailable = lines[x].split("\"")[1];
+          }
+        }
+        if(this.firmwareVersion){
+          console.log(this.firmwareVersion, this.latestFirmwareAvailable)
+          if(this.firmwareVersion === this.latestFirmwareAvailable){
+            this.updateAvailableMacroDeck = false;
+          }
+          else{
+            this.updateAvailableMacroDeck = true;
+          }
+        }
+      }, error => {
+        
+      });
+      
+  
+      console.log(this.firmwareVersion, this.updateAvailableMacroDeck)
+    }, error => {
+      if(!this.deviceNotAvailable){
+        this.snackBarService.showGenericSnackBar('Macrodeck device is not available, please turn on the macrodeck, or connect it to the same network as this device', false, false)
+        this.deviceNotAvailable = true;
+        this.intervalPollerTwo = setInterval(() => {
+          this.checkAvailableUpdateMacroDeck();
+        }, 1000);
+      }
+      
+    })
+    
+    
   }
 
   isNewerVersion (oldVer, newVer) {
@@ -136,34 +165,46 @@ export class AppComponent implements OnInit {
   }
 
   checkHiddenOptions(): boolean {
-    if((this.isShowing || this.isExpanded) && this.showSubmenu){
+    if(this.deviceNotAvailable){
+      return true;
+    }
+    else if((this.isShowing || this.isExpanded) && this.showSubmenu){
       return true;
     }
     else{
-      if(!this.updateAvailableMacroDeck){
-        return true;
+      if(this.updateAvailableMacroDeck && this.firmwareVersion){
+        return false;
       }
-      return false;
+      return true;
     }
   }
 
   checkHiddenAdmin(): boolean {
-    if((this.isShowing || this.isExpanded) && this.showAdminOptions){
+    if(this.deviceNotAvailable){
+      return true;
+    }
+    else if((this.isShowing || this.isExpanded) && this.showAdminOptions){
       return true;
     }
     else{
-      if(!this.updateAvailableMacroDeck){
-        return true;
+      if(this.updateAvailableMacroDeck && this.firmwareVersion){
+        return false;
       }
-      return false;
+      return true;
     }
   }
 
   checkHiddenFirmware(): boolean {
-    if(!this.updateAvailableMacroDeck){
+    if(this.deviceNotAvailable){
       return true;
     }
-    return false;
+    else if(!this.updateAvailableMacroDeck){
+      return true;
+    }
+    else if(this.updateAvailableMacroDeck && this.firmwareVersion){
+      return false;
+    }
+    return true;
   }
 
 }

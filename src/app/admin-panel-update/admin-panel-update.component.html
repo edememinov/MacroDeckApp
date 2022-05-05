@@ -15,8 +15,20 @@
 <div class="container">
     <div class="row" *ngIf="latestFirmwareAvailable !==  firmwareVersion">
         <div class="col-md-12">
-            <a target="_blank" href="https://downgit.github.io/#/home?url=https://github.com/edememinov/MacroDeck/blob/main/ActionHandler.h.d1.bin">Download latest version</a>
+            <button mat-raised-button color="primary" (click)="uploadToMacroDeck()">Update firmware to latest version</button>
         </div>
     </div>
+    <div class="row" *ngIf="latestFirmwareAvailable ===  firmwareVersion">
+        <div class="col-md-12">
+            <button mat-raised-button color="primary" (click)="uploadToMacroDeck()">Reinstall firmware</button>
+        </div>
+    </div>
+    <br />
+    <br />
+
+    <div class="center">
+        <mat-progress-bar style="width: 70%;;margin: 13%;" *ngIf="progressBar" mode="determinate" [value]="progressBarValue"></mat-progress-bar>
+    </div>
+
 </div>
-<iframe name="showIframe" [src]="data | safe:'resourceUrl'" height="600" width="1000"></iframe>
+

@@ -64,6 +64,7 @@ pageFile = {
  
   allAvailableFilter:string;
   onDeviceFilter: string;
+  customButtonFilter: string;
   selectedFile: any;
   dummy = 0;
   pageName = '';
@@ -79,10 +80,10 @@ pageFile = {
   containerIdOnDevice = 'id-on-device';
   containerIdDelete = 'id-delete';
   containerIdAllButtons = 'id-all-buttons';
+  containerIdCustom = 'id-custom-buttons';
   constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private buttonService : MacrodeckButtonService, private snackBarService: SnackbarService, private reloaderService: ReloaderService) 
   { 
-    let henk = random();
-    console.log("I AM DOING MY PART AS WELL", henk);
+
   }
 
   ngOnDestroy(): void {
@@ -92,9 +93,11 @@ pageFile = {
 
   searchControl = new FormControl();
   fileControl = new FormControl();
+  customButtonsControl = new FormControl();
 
   filteredOptionsPage$: Observable<any>;
   filteredOptionsFile$: Observable<any>;
+  filteredOptionsCustomButtons$: Observable<any>;
 
   private _filterPageFile(value: string) {
     const filterValue = value.toLowerCase();
@@ -106,9 +109,12 @@ pageFile = {
     return _.filter(array, (value) => value.toLowerCase().includes(filterValue))
   }
   
+  private _filterCustomButton(array: any, value: string) {
+    const filterValue = value.toLowerCase();
+    return _.filter(array, (value) => value.toLowerCase().includes(filterValue))
+  }
+  
   ngOnInit(): void {
-
-    console.log("I AM DOING MY PART");
 
     this.readButtons();
 
@@ -118,6 +124,10 @@ pageFile = {
     });
     
     
+    this.filteredOptionsCustomButtons$ = this.customButtonsControl.valueChanges.pipe(
+      startWith(''),
+      map(data => this._filterCustomButton(this.customButtonFile.buttons, data)),
+    );
     
     this.buttonService.getAllFiles().pipe(takeUntil(this.unsubscriber$)).subscribe((value) => {
       if(value){
@@ -138,9 +148,6 @@ pageFile = {
     this.buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readMacrodeckData', ''));
     this.backUpButtonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readMacrodeckData', ''));
     this.customButtonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readCustomMacrodeckData', ''));
-    this.customButtonFile.buttons.forEach((button) =>{
-      this.buttonFile.buttons.push(button); 
-    })
   }
 
   addPageOrFile(waitForPageName: boolean){
@@ -234,34 +241,57 @@ pageFile = {
     this.submit();
   }
 
-  deleteButton($event){
+  deleteButton($event, isOndevice = false){
     console.log($event);
-    $event.button.type !== 'macrodeckCall'
+    if(isOndevice){
+      this.deleteSpecificButton('updateMacrodeck', this.pageFile.pages[this.pageNumber], $event)
+    }
+    else{
+      $event.button.type !== 'macrodeckCall'
       ? this.deleteSpecificButton('writeCustomMacrodeckData', this.customButtonFile, $event)
       : this.deleteSpecificButton('writeMacrodeckData', this.backUpButtonFile, $event);
+    }
+    
 
       this.readButtons();
   }
 
-  updateButton($event){
+  updateButton($event, isOndevice = false){
     console.log($event);
-    $event.oldItem.type !== 'macrodeckCall'
-      ? this.updateSpecificButton('writeCustomMacrodeckData', this.customButtonFile, $event)
-      : this.updateSpecificButton('writeMacrodeckData', this.backUpButtonFile, $event);
-      this.readButtons();
+    if(isOndevice){
+      this.updateSpecificButton('updateMacrodeck', this.pageFile.pages[this.pageNumber], $event)
+    }
+    else{
+      $event.oldItem.type !== 'macrodeckCall'
+        ? this.updateSpecificButton('writeCustomMacrodeckData', this.customButtonFile, $event)
+        : this.updateSpecificButton('writeMacrodeckData', this.backUpButtonFile, $event);
+        this.readButtons();
+    }
   }
 
   updateSpecificButton(sendName: string, file: any, $event: any){
     let foundIndex = _.findIndex(file.buttons, $event.oldItem);
     file.buttons[foundIndex] = $event.button;
-    this._electron.ipcRenderer.sendSync(sendName, JSON.stringify(file));
-    //this.reloaderService.reloadAppAfterThreeSeconds();
+    console.log(file.buttons);
+    if(sendName !== 'updateMacrodeck'){
+      this._electron.ipcRenderer.sendSync(sendName, JSON.stringify(file));
+    }
+    else{
+      this.submit();
+    }
+    this.snackBarService.showGenericSnackBar('Button has been updated', true)
+    
   }
 
   deleteSpecificButton(sendName: string, file: any, $event: any){
     let foundIndex = _.findIndex(file.buttons, $event.button);
     file.buttons.splice(foundIndex, 1);
-    this._electron.ipcRenderer.sendSync(sendName, JSON.stringify(file));
+    if(sendName !== 'updateMacrodeck'){
+      this._electron.ipcRenderer.sendSync(sendName, JSON.stringify(file));
+    }
+    else{
+      this.submit();
+    }
     this.snackBarService.showGenericSnackBar('Button has been deleted', true)
   }
 
@@ -302,14 +332,14 @@ pageFile = {
   moveOtherToArray(item, previousContainer, newIndex, newContainer){
     //From OnDevice to All Available buttons
     if(previousContainer === this.containerIdOnDevice && newContainer === this.containerIdAllButtons){
-      let foundIndex = _.findIndex(this.pageFile.pages[0].buttons, item);
+      let foundIndex = _.findIndex(this.pageFile.pages[this.pageNumber].buttons, item);
       this.buttonFile.buttons.splice(newIndex, 0, item);
       this.pageFile.pages[this.pageNumber].buttons.splice(foundIndex, 1)
     }
-    //From OnDevice to Delete
-    else if(previousContainer === this.containerIdOnDevice && newContainer === this.containerIdDelete){
-      let foundIndex = _.findIndex(this.pageFile.pages[0].buttons, item);
-      this.deleteList.splice(newIndex, 0, item)
+    //From OnDevice to Custom buttons
+    else if(previousContainer === this.containerIdOnDevice && newContainer === this.containerIdCustom){
+      let foundIndex = _.findIndex(this.pageFile.pages[this.pageNumber].buttons, item);
+      this.customButtonFile.buttons.splice(newIndex, 0, item)
       this.pageFile.pages[this.pageNumber].buttons.splice(foundIndex, 1);
     }
     //From All Available buttons to OnDevice
@@ -319,10 +349,10 @@ pageFile = {
       this.buttonFile.buttons.splice(foundIndex, 1);
     }
     //From delete to OnDevice
-    else if(previousContainer === this.containerIdDelete && newContainer === this.containerIdOnDevice){
-      let foundIndex = _.findIndex(this.deleteList, item);
+    else if(previousContainer === this.containerIdCustom && newContainer === this.containerIdOnDevice){
+      let foundIndex = _.findIndex(this.customButtonFile.buttons, item);
       this.pageFile.pages[this.pageNumber].buttons.splice(newIndex, 0, item)
-      this.deleteList.splice(foundIndex, 1);
+      this.customButtonFile.buttons.splice(foundIndex, 1);
     }
   }
 
@@ -336,6 +366,12 @@ pageFile = {
       let newIndex = _.findIndex(this.pageFile.pages[this.pageNumber].buttons, oldItem);
       let oldIndex = _.findIndex(this.pageFile.pages[this.pageNumber].buttons, newitem);
       this.move(this.pageFile.pages[this.pageNumber].buttons, oldIndex, newIndex);
+      
+    }
+    else if(previousContainer === this.containerIdCustom){
+      let newIndex = _.findIndex(this.customButtonFile.buttons, oldItem);
+      let oldIndex = _.findIndex(this.customButtonFile.buttons, newitem)
+      this.move(this.customButtonFile.buttons, oldIndex, newIndex);
       
     }
   }
