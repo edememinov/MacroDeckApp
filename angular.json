@@ -26,12 +26,15 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "assets/monaco-editor/" }
+              
             ],
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+            ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
             }
@@ -122,7 +125,8 @@
               "src/styles.scss"
             ],
             "assets": [
-              "src/assets"
+              "src/assets",
+              { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "assets/monaco-editor/" }
             ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"

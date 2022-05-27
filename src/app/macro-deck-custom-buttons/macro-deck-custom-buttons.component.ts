@@ -3,8 +3,10 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '../core/services';
 import { ApiCallButton, MacroDeckButton, MqttButton } from '../shared/models/button.model'
 import { SnackbarService } from '../services/snackbar.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ReloaderService } from '../services/reloader.service';
+import { EditorPreferencesService } from '../services/editor-preferences.service';
+
 
 @Component({
   selector: 'app-macro-deck-custom-buttons',
@@ -13,11 +15,38 @@ import { ReloaderService } from '../services/reloader.service';
 })
 export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
 
-  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService, private reloaderService: ReloaderService) { }
+  constructor(private formBuilder: FormBuilder, private _electron:ElectronService, private snackBarService: SnackbarService, private editorPreferencesService: EditorPreferencesService) { 
+    this.preferencesSubscription = this.editorPreferencesService.preferencesSubject.subscribe(
+      (preferences: any) => {
+        this.preferences = {
+          language: preferences.language,
+          theme: preferences.theme,
+          fontFamily: preferences.fontFamily,
+          fontSize: preferences.fontSize,
+          tabSize: preferences.tabSize,
+          lineNumbers: preferences.lineNumbers
+        };
+      }
+    );
+    this.editorPreferencesService.emitPreferencesSubject(); 
+    this.editorPreferencesService.setTheme('vs-dark');
+    this.editorPreferencesService.setLanguage('json');
+    this.editorPreferencesService.setLineNumbers(true);
+  }
 
   selected = new FormControl('');
   customButton: FormGroup;
   unsubscriber$ = new Subject();
+  code: string;
+  editorOptions = {theme: 'vs-dark', language: 'json'};
+  public model: string;
+  public filename: string;
+  public preferences: any;
+  public preferencesSubscription: Subscription;
+  public languages: any[];
+  public themes: any[];
+  public fontFamilies: any[];
+  public lineNumbers: Boolean;
 
   ngOnDestroy(): void {
     this.unsubscriber$.next();
@@ -25,6 +54,8 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    //console.log(this._electron.remote.app.moveToApplicationsFolder());
+    this.code = '{"nerd": "doubleNerds"}';
     this.customButton = this.formBuilder.group({
       url: new FormControl(''),
       description: new FormControl(''),
@@ -35,10 +66,7 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  beautify(){
-    this.customButton.controls.payload.patchValue(JSON.stringify(JSON.parse(this.customButton.controls.payload.value), null, 2));
-  }
-  
+
   submit(){
     let buttonFile = JSON.parse(this._electron.ipcRenderer.sendSync('readCustomMacrodeckData', ''));
     switch(this.selected.value){
@@ -66,11 +94,9 @@ export class MacroDeckCustomButtonsComponent implements OnInit, OnDestroy {
         buttonFile.buttons?.push(macroDeckButton)
         break;
     }
-//hier
     this._electron.ipcRenderer.sendSync('writeCustomMacrodeckData', JSON.stringify(buttonFile));
     this.snackBarService.showGenericSnackBar('Button has added', true)
     //this.reloaderService.reloadAppAfterThreeSeconds();
     this.customButton.reset();
   }
-
 }

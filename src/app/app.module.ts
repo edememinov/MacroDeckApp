@@ -33,6 +33,7 @@ import { GenericSnackbarModule } from './shared/generic-snackbar/generic-snackba
 import { SnackbarService } from './services/snackbar.service';
 import { ConfirmPopUpModule } from './shared/confirm-pop-up/confirm-pop-up.module';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { MonacoEditorModule, MONACO_PATH } from '@materia-ui/ngx-monaco-editor';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,6 +60,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     MacroDeckEditButtonsModule,
     GenericSnackbarModule,
     ConfirmPopUpModule,
+    MonacoEditorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

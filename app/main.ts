@@ -41,6 +41,7 @@ function createWindow(): BrowserWindow {
 
   if (serve) {
     win.webContents.openDevTools();
+    module.paths.push(path.resolve(app.getAppPath() + '/node_modules'));
     win.webContents.on('did-fail-load', () => win.loadURL('http://localhost:4200'));
     require('electron-reload')(__dirname, {
       electron: require(path.join(__dirname, '/../node_modules/electron'))
@@ -62,6 +63,7 @@ function createWindow(): BrowserWindow {
         slashes: true
       })
     );
+    module.paths.push(path.resolve(app.getAppPath() + '/node_modules'));
   }
 
   // Emitted when the window is closed.

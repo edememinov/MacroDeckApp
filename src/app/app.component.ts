@@ -62,12 +62,12 @@ export class AppComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    this.checkAvailableUpdateMacroDeck();
-    this.checkUpdateAvailableMMS();
-    this.intervalPollerOne = setInterval(() => {
-      this.checkAvailableUpdateMacroDeck();
-      this.checkUpdateAvailableMMS();
-    }, 150000);
+    // this.checkAvailableUpdateMacroDeck();
+    // this.checkUpdateAvailableMMS();
+    // this.intervalPollerOne = setInterval(() => {
+    //   this.checkAvailableUpdateMacroDeck();
+    //   this.checkUpdateAvailableMMS();
+    // }, 150000);
   }
 
   checkAvailableUpdateMacroDeck(){

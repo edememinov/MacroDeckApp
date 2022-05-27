@@ -29,7 +29,7 @@ export class MacroDeckOptionsComponent implements OnInit, OnDestroy {
     this.macrodeckOptions = this.formBuilder.group({
       fingerprint: new FormControl(''),
       socketHost: new FormControl(''),
-      socketPort: new FormControl(''),
+      socketPort: new FormControl(8500),
       development: new FormControl(''),
       calibrationMode: new FormControl(''),
       buttonCount: new FormControl(''),
